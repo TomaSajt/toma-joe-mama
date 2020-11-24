@@ -1,1 +1,1 @@
-worker: start start.bat
+worker: linuxstart.sh
