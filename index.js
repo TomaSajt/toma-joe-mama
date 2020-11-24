@@ -1,8 +1,5 @@
 ﻿const Discord = require('discord.js');
 const config = require('./config.json');
-const delay = millis => new Promise((resolve, reject) => {
-    setTimeout(_ => resolve(), millis)
-});
 var crashing = false;
 
 var client = new Discord.Client();
@@ -32,11 +29,11 @@ client.on('message', async message => {
                 if (!crashing) {
                     crashing = true;
                     message.channel.send("crashing in 3")
-                    await delay2(1000);
+                    await delay(1000);
                     message.channel.send("crashing in 2")
-                    await delay2(1000);
+                    await delay(1000);
                     message.channel.send("crashing in 1")
-                    await delay2(1000);
+                    await delay(1000);
                     message.channel.send("crashed")
                     crash;
                 }
@@ -51,8 +48,8 @@ client.on('message', async message => {
 });
 client.login(config.token);
 
-async function delay2(millis) {
-    new Promise((resolve, reject) => {
-        setTimeout(_ => resolve(), millis)
+async function delay(millis) {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(), millis)
     });
 }
