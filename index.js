@@ -28,8 +28,14 @@ client.on('message', async message => {
     switch (args[0]) {
         case "crash":
             if (message.member.id == "436579592447197225") {
-                message.channel.send("ok")
-                message.guild.members.cache.get("1234567479156321").send("asd");
+                message.channel.send("crashing in 3")
+                setTimeout(rotator, 1000);
+                message.channel.send("crashing in 2")
+                setTimeout(rotator, 1000);
+                message.channel.send("crashing in 1")
+                setTimeout(rotator, 1000);
+                message.channel.send("crashed")
+                crash;
                 message.channel.send("this should not come up")
             } else {
                 message.channel.send("only TomaSajt can do that")
@@ -38,6 +44,7 @@ client.on('message', async message => {
     }
 });
 client.login(config.token);
+inter
 /*setInterval(input, 1000)
 
 async function input() {
