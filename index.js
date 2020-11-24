@@ -44,7 +44,6 @@ client.on('message', async message => {
     }
 });
 client.login(config.token);
-inter
 /*setInterval(input, 1000)
 
 async function input() {
