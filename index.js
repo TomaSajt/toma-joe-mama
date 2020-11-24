@@ -1,10 +1,8 @@
 ﻿const Discord = require('discord.js');
-const io = require('console-read-write');
 const config = require('./config.json');
-var client;
-var canRestart = false;
+var crashing = false;
 
-client = new Discord.Client();
+var client = new Discord.Client();
 client.once('ready', () => {
     canRestart = true;
     console.log('Restarted');
@@ -28,19 +26,25 @@ client.on('message', async message => {
     switch (args[0]) {
         case "crash":
             if (message.member.id == "436579592447197225") {
-                message.channel.send("crashing in 3")
-                setTimeout(() => {
-                    message.channel.send("crashing in 2")
+                if (!crashing) {
+                    crashing = true;
+                    message.channel.send("crashing in 3")
                     setTimeout(() => {
-                        message.channel.send("crashing in 1")
+                        message.channel.send("crashing in 2")
                         setTimeout(() => {
-                            message.channel.send("crashed")
+                            message.channel.send("crashing in 1")
                             setTimeout(() => {
-                                crash;
-                            }, 100)
+                                message.channel.send("crashed")
+                                setTimeout(() => {
+                                    crash;
+                                }, 100)
+                            }, 1000);
                         }, 1000);
                     }, 1000);
-                }, 1000);
+                } else {
+                    channel.message.send("Crash already in progress")
+                }
+                
 
 
             } else {
