@@ -1,5 +1,5 @@
 #!/bin/bash
-while true:
+while true
 do
 	node index.js
 done

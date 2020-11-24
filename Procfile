@@ -1,1 +1,1 @@
-worker: linuxstart.sh
+worker: bash linuxstart.sh
