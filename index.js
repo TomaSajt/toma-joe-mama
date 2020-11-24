@@ -29,14 +29,18 @@ client.on('message', async message => {
         case "crash":
             if (message.member.id == "436579592447197225") {
                 message.channel.send("crashing in 3")
+                setTimeout(() => {
+                    message.channel.send("crashing in 2")
+                }, 1000);
                 setTimeout(() => { }, 1000);
-                message.channel.send("crashing in 2")
-                setTimeout(() => { }, 1000);
-                message.channel.send("crashing in 1")
-                setTimeout(() => { }, 1000);
-                message.channel.send("crashed")
-                crash;
-                message.channel.send("this should not come up")
+                setTimeout(() => {
+                    message.channel.send("crashing in 1")
+                }, 2000);
+                setTimeout(() => {
+                    message.channel.send("crashed")
+                    crash;
+                    message.channel.send("this should not come up")
+                }, 3000);
             } else {
                 message.channel.send("only TomaSajt can do that")
             }
