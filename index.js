@@ -31,16 +31,18 @@ client.on('message', async message => {
                 message.channel.send("crashing in 3")
                 setTimeout(() => {
                     message.channel.send("crashing in 2")
+                    setTimeout(() => {
+                        message.channel.send("crashing in 1")
+                        setTimeout(() => {
+                            message.channel.send("crashed")
+                            setTimeout(() => {
+                                crash;
+                            }, 100)
+                        }, 1000);
+                    }, 1000);
                 }, 1000);
-                setTimeout(() => { }, 1000);
-                setTimeout(() => {
-                    message.channel.send("crashing in 1")
-                }, 2000);
-                setTimeout(() => {
-                    message.channel.send("crashed")
-                    crash;
-                    message.channel.send("this should not come up")
-                }, 3000);
+
+
             } else {
                 message.channel.send("only TomaSajt can do that")
             }
