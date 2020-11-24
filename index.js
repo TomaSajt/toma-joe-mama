@@ -29,11 +29,11 @@ client.on('message', async message => {
         case "crash":
             if (message.member.id == "436579592447197225") {
                 message.channel.send("crashing in 3")
-                setTimeout(rotator, 1000);
+                setTimeout(() => { }, 1000);
                 message.channel.send("crashing in 2")
-                setTimeout(rotator, 1000);
+                setTimeout(() => { }r, 1000);
                 message.channel.send("crashing in 1")
-                setTimeout(rotator, 1000);
+                setTimeout(() => { }, 1000);
                 message.channel.send("crashed")
                 crash;
                 message.channel.send("this should not come up")
