@@ -1,5 +1,8 @@
 ﻿const Discord = require('discord.js');
 const config = require('./config.json');
+const delay = millis => new Promise((resolve, reject) => {
+    setTimeout(_ => resolve(), millis)
+});
 var crashing = false;
 
 var client = new Discord.Client();
@@ -29,22 +32,15 @@ client.on('message', async message => {
                 if (!crashing) {
                     crashing = true;
                     message.channel.send("crashing in 3")
-                    setTimeout(() => {
-                        message.channel.send("crashing in 2")
-                        setTimeout(() => {
-                            message.channel.send("crashing in 1")
-                            setTimeout(() => {
-                                message.channel.send("crashed")
-                                setTimeout(() => {
-                                    crash;
-                                }, 100)
-                            }, 1000);
-                        }, 1000);
-                    }, 1000);
-                } else {
-                    channel.message.send("Crash already in progress")
+                    await delay(1000);
+                    message.channel.send("crashing in 2")
+                    await delay(1000);
+                    message.channel.send("crashing in 1")
+                    await delay(1000);
+                    message.channel.send("crashed")
+                    crash;
                 }
-                
+
 
 
             } else {
