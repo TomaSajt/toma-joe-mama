@@ -1,19 +1,46 @@
 ﻿const Discord = require('discord.js');
+const io = require('console-read-write');
 const config = require('./config.json');
-const client = new Discord.Client();
+var client;
+var canRestart = false;
 
+client = new Discord.Client();
 client.once('ready', () => {
+    canRestart = true;
     console.log('Restarted');
 });
 client.on('message', async message => {
-    if (!message.content.startsWith(config.prefix) || message.author.bot) return;
-    const args = message.content.slice(config.prefix.length).trim().split(' ').filter(str => str !="");
+    if (message.author.bot) return;
+    if (message.content.toLowerCase().includes("karesz")) {
+        message.react("<:karesz:776413600117030913>")
+    }
+    if (message.content.toLowerCase().includes("pog")) {
+        message.react("<:RuviPog:777804089290784808>")
+    }
+    if (message.content.toLowerCase().includes("joe mama")) {
+        message.channel.send(`> You are almost as funny as me ${message.author}`, { files: ["https://i.imgur.com/NEZEOhS.gif"] })
+    }
+    if (message.content.toLowerCase().includes("joe") && (message.content.toLowerCase().includes("who's") || message.content.toLowerCase().includes("who is") || message.content.toLowerCase().includes("whos") || message.content.toLowerCase().includes("who s"))) {
+        message.channel.send("joe mama")
+    }
+    if (!message.content.startsWith(config.prefix)) return;
+    const args = message.content.slice(config.prefix.length).trim().split(' ').filter(str => str != "");
     switch (args[0]) {
-        case "mama":
-            //message.channel.send(`>You are so funny ${message.author}`)
-            args.forEach(arg => message.channel.send(arg != "" ? arg : "üres"))
+        case "crash":
+            if (message.member.id == "436579592447197225") {
+                message.channel.send("ok")
+                crashing;
+            } else {
+                message.channel.send("only TomaSajt can do that")
+            }
             break;
     }
 });
-
 client.login(config.token);
+setInterval(input, 1000)
+
+async function input() {
+    if (await io.read() === "crash") {
+        crash;
+    }
+}
