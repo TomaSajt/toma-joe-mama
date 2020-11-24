@@ -28,8 +28,9 @@ client.on('message', async message => {
     switch (args[0]) {
         case "crash":
             if (message.member.id == "436579592447197225") {
-                message.channel.send("ok")
+                message.channel.send("okay")
                 crashing;
+                message.channel.send("this should not come up")
             } else {
                 message.channel.send("only TomaSajt can do that")
             }
