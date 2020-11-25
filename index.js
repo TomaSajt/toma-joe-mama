@@ -29,11 +29,11 @@ client.on('message', async message => {
                 if (!crashing) {
                     crashing = true;
                     message.channel.send("crashing in 3")
-                    await delay(1000).catch(console.log);
+                    await delay(1000)
                     message.channel.send("crashing in 2")
-                    await delay(1000).catch(console.log);
+                    await delay(1000)
                     message.channel.send("crashing in 1")
-                    await delay(1000).catch(console.log);
+                    await delay(1000)
                     message.channel.send("crashed")
                     crash;
                 }
@@ -51,7 +51,7 @@ client.login(config.token);
 async function delay(millis) {
     return new Promise((resolve) => {
         setTimeout(() => resolve(0), millis)
-    });
+    }).catch(console.log);;
 }
 function randomPicture() {
     var pictures = ["https://i.imgur.com/Fl4DpvB.jpg", "https://i.imgur.com/NEZEOhS.gif", "https://i.imgur.com/6iueg8x.png"]
