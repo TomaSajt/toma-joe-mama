@@ -35,6 +35,7 @@ client.on('message', async message => {
                     message.channel.send("crashing in 1")
                     await delay(1000)
                     message.channel.send("crashed")
+                    await delay(100)
                     crash;
                 }
 
@@ -49,15 +50,10 @@ client.on('message', async message => {
 client.login(config.token);
 
 async function delay(millis) {
-    try {
-        return new Promise((resolve) => {
-            setTimeout(() => resolve(0), millis)
-        })
-    } catch (e) {
-        console.log(e)
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(0), millis)
+    })
+    function randomPicture() {
+        var pictures = ["https://i.imgur.com/Fl4DpvB.jpg", "https://i.imgur.com/NEZEOhS.gif", "https://i.imgur.com/6iueg8x.png"]
+        return pictures[Math.floor(Math.random() * pictures.length)]
     }
-}
-function randomPicture() {
-    var pictures = ["https://i.imgur.com/Fl4DpvB.jpg", "https://i.imgur.com/NEZEOhS.gif", "https://i.imgur.com/6iueg8x.png"]
-    return pictures[Math.floor(Math.random() * pictures.length)]
-}
