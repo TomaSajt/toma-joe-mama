@@ -35,28 +35,33 @@ client.on('message', async message => {
     if (message.content.toLowerCase() == `${config.prefix}help`) {
         message.channel.send("There is no helping you...")
     }
-    if (message.content.toLowerCase() == `${config.prefix}leaderboard`) {
-        fetch("https://adventofcode.com/2020/leaderboard/private/view/1022157.json", { headers: { cookie: `session=${config.aocSession}` } }).then(res => res.json())
-            .then(data => {
-                var members = [];
-                for (var key in data.members) {
-                    members.push(data.members[key])
+    if (message.content.toLowerCase().startsWith(`${config.prefix}timer`)) {
+        var args = message.content.substring(`${config.prefix}timer`.length).trim().split().filter(str => str != "");
+        var num = parseInt(args[0])
+        if (!isNaN(num)) {
+            if (num >= 0) {
+                if (num <= 300) {
+                    try {
+                        var mes = await message.channel.send(num)
+                        for (var i = num - 1; i >= 0; i--) {
+                            await delay(1000)
+                            if (i%5==0) {
+                                mes.edit(i);
+                            }
+                        }
+                    } catch (e) {
+                        message.channel.send("an exeption happened, idk what tho")
+                    }
+                } else {
+                    message.channel.send("The longest wait time is 5 min (300 sec)");
                 }
-                members.sort((a, b) => b.local_score - a.local_score);
-                var mess = "```";
-                var longestName = 0;
-                var longestScore = 0;
-                members.forEach(mem => {
-                    if (mem.name.length > longestName) longestName = mem.name.length
-                    if (mem.local_score.toString().length > longestScore) longestScore = mem.local_score.toString().length
-                })
-                members.forEach(mem => {
-                    mess += `${mem.name}:${" ".repeat(longestName - mem.name.length)}   Score: ${mem.local_score}${" ".repeat(longestScore - mem.local_score.toString().length)}   ${mem.stars}⭐ \n`
-                })
-                mess += "```";
-                message.channel.send(mess)
-            })
-
+            } else {
+                message.channel.send("Your number is lower than your IQ, which is invalid");
+            }
+        } else {
+            message.channel.send("This number is invalid")
+        }
+        
     }
     if (message.content.toLowerCase().startsWith(`${config.prefix}search`)) {
         var args = message.content.substring(`${config.prefix}search`.length).trim().split().filter(str => str != "");
