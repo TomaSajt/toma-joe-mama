@@ -1,5 +1,6 @@
 ﻿const Discord = require('discord.js');
 const config = require('./config.json');
+const kareszCommand = require('./commands/karesz.js');
 var crashing = false;
 var pause = false;
 
@@ -20,28 +21,7 @@ client.on('message', async message => {
         pause = true;
         message.channel.send("Paused instance this instance of the bot")
     }
-    if (text.includes("karesz")) {
-        var found = false;
-        if (text.includes("down")) {
-            found = true;
-            message.react(config.emotes.kareszdown);
-        }
-        if (text.includes("up")) {
-            found = true;
-            message.react(config.emotes.kareszup);
-        }
-        if (text.includes("left")) {
-            found = true;
-            message.react(config.emotes.kareszleft);
-        }
-        if (text.includes("right")) {
-            found = true;
-            message.react(config.emotes.kareszright);
-        }
-        if (!found) {
-            message.react(config.emotes.karesz)
-        }
-    }
+    kareszCommand(message)
     if (text.includes("pog")) {
         message.react("<:RuviPog:777804089290784808>")
     }
