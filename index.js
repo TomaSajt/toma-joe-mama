@@ -20,6 +20,7 @@ client.once('ready', () => {
 });
 
 client.on('message', async message => {
+    if (message.author.bot) return;
     if (pauseUnpauseCommand(message)) return;
     normalCommands.forEach(comm => comm(message))
     normalAwaitCommands.forEach(async awComm => await awComm(message))
