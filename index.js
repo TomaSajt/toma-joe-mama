@@ -38,10 +38,9 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
         })
     }
     if (interaction.data.name == "remote") {
-        var guild = client.guilds.cache.get(config.guilds.nyf)
+        var guild = client.guilds.cache.get(interaction.guild_id)
         var channel = guild.channels.cache.get(interaction.data.options[0].value);
-        console.log(interaction.member.roles.includes(client.guilds.cache.get(interaction.guild_id).roles.cache.get(config.roles.remote)))
-        if (true) {
+        if (interaction.member.roles.includes(config.roles.remote)) {
             if (channel instanceof Discord.TextChannel) {
                 channel.send(interaction.data.options[1].value)
             }
