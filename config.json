@@ -1,5 +1,14 @@
 {
-	"prefix": "joe!",
-	                                                                                                                                                                                       "token": "Nzc3OTA1NDUyMDg0MTAxMTIx.X7KO6A._KNNipAYsKzilxp2u1d5mwmUnpo",
-															"aocSession": "53616c7465645f5f7c1fe62631109bd5767d20e6679ab022d840d54b27e36a02c93d0a367bbc925c6b5e645299a8b908"
+   "prefix":"joe!",
+   "members":{
+      "toma":436579592447197225
+   },
+   "emotes":{
+      "karesz":"<:karesz:776413600117030913>",
+      "kareszdown":"<:kareszdown:804369308976152586>",
+      "kareszup":"<:kareszup:804369309237116969>",
+      "kareszleft":"<:kareszleft:804369309195173989>",
+      "kareszright":"<:kareszright:804369309194780703>"
+   },
+   "token":"Nzc3OTA1NDUyMDg0MTAxMTIx.X7KO6A._KNNipAYsKzilxp2u1d5mwmUnpo"
 }
