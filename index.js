@@ -1,6 +1,8 @@
 ﻿const Discord = require('discord.js');
 const config = require('./config.json');
 const kareszCommand = require('./commands/karesz.js');
+const joeMamaCommand = require('./commands/joe mama.js');
+const whosJoeCommand = require('./commands/whos joe.js');
 var crashing = false;
 var pause = false;
 
@@ -25,12 +27,8 @@ client.on('message', async message => {
     if (text.includes("pog")) {
         message.react("<:RuviPog:777804089290784808>")
     }
-    if (text.includes("joe mama")) {
-        message.channel.send(`> You are almost as funny as me ${message.author}`, { files: [randomPicture()] })
-    }
-    if (text.includes("joe") && (message.content.toLowerCase().includes("who's") || message.content.toLowerCase().includes("who is") || message.content.toLowerCase().includes("whos") || message.content.toLowerCase().includes("who s"))) {
-        message.channel.send("joe mama")
-    }
+    joeMamaCommand(message);
+    whosJoeCommand(message);
     if (text == `${config.prefix}help`) {
         message.channel.send("There is no helping you...")
     }
@@ -84,11 +82,4 @@ async function delay(millis) {
     return new Promise((resolve) => {
         setTimeout(() => resolve(0), millis)
     })
-}
-function randomPicture() {
-    var pictures = []
-    pictures.push("https://i.imgur.com/Fl4DpvB.jpg")
-    pictures.push("https://i.imgur.com/NEZEOhS.gif")
-    pictures.push("https://i.imgur.com/6iueg8x.png");
-    return pictures[Math.floor(Math.random() * pictures.length)]
 }
