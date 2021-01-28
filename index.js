@@ -3,6 +3,8 @@ const config = require('./config.json');
 const kareszCommand = require('./commands/karesz.js');
 const joeMamaCommand = require('./commands/joe mama.js');
 const whosJoeCommand = require('./commands/whos joe.js');
+const helpCommand = require('./commands/help.js');
+const pogCommand = require('./commands/pog.js');
 var crashing = false;
 var pause = false;
 
@@ -24,14 +26,10 @@ client.on('message', async message => {
         message.channel.send("Paused instance this instance of the bot")
     }
     kareszCommand(message)
-    if (text.includes("pog")) {
-        message.react("<:RuviPog:777804089290784808>")
-    }
+    pogCommand(message)
     joeMamaCommand(message);
     whosJoeCommand(message);
-    if (text == `${config.prefix}help`) {
-        message.channel.send("There is no helping you...")
-    }
+    helpCommand(message);
     if (text.startsWith(`${config.prefix}timer`)) {
         var args = message.content.substring(`${config.prefix}timer`.length).trim().split().filter(str => str != "");
         var num = parseInt(args[0])
