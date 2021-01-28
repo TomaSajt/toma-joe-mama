@@ -1,6 +1,6 @@
 ﻿const Discord = require('discord.js');
 const config = require('./config.json');
-const pauseUnpauseCommand = require('./commands/special/sync/pause unpause.js');
+const { pauseUnpauseCommand, isPaused } = require('./commands/special/sync/pause unpause.js');
 const normalCommands = [
     require('./commands/normal/sync/karesz.js'),
     require('./commands/normal/sync/joe mama.js'),
@@ -25,8 +25,8 @@ client.on('message', async message => {
     
 });
 client.ws.on('INTERACTION_CREATE', async interaction => {
-    //console.log(interaction)
-    //console.log(interaction.data.options)
+    if (isPaused()) return;
+    console.log(interaction)
     if (interaction.data.name == "tag") {
         client.api.interactions(interaction.id, interaction.token).callback.post({
             data: {
@@ -40,8 +40,15 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
     if (interaction.data.name == "remote") {
         var guild = client.guilds.cache.get(config.guilds.nyf)
         var channel = guild.channels.cache.get(interaction.data.options[0].value);
-        if (channel instanceof Discord.TextChannel) {
-            channel.send(interaction.data.options[1].value)
+        console.log(interaction.member.roles.includes(client.guilds.cache.get(interaction.guild_id).roles.cache.get(config.roles.remote)))
+        if (true) {
+            if (channel instanceof Discord.TextChannel) {
+                channel.send(interaction.data.options[1].value)
+            }
+        } else {
+            if (channel instanceof Discord.TextChannel) {
+                channel.send("You dont have the permissions to do that")
+            }
         }
         client.api.interactions(interaction.id, interaction.token).callback.post({
             data: {
