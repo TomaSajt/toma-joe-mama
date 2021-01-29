@@ -1,5 +1,6 @@
 ﻿const Discord = require('discord.js');
 const config = require('./config.json');
+const stringify = require('./stringify.js');
 const { pauseUnpauseCommand, isPaused } = require('./commands/special/sync/pause unpause.js');
 const normalCommands = [
     require('./commands/normal/sync/karesz.js'),
@@ -8,91 +9,51 @@ const normalCommands = [
     require('./commands/normal/sync/help.js'),
     require('./commands/normal/sync/pog.js')
 ]
-const normalAwaitCommands = [
+const normalAsyncCommands = [
     require('./commands/normal/async/timer.js'),
     require('./commands/normal/async/crash.js')
+]
+const normalSlashCommands = [
+    require('./slash_commands/tag.js'),
+    require('./slash_commands/remote.js')
 ]
 const client = new Discord.Client();
 client.once('ready', () => {
     console.log('Restarted');
     
 });
+
+//Handle messages
 client.on('message', async message => {
+
+    //Pause logic
     if (message.author.bot) return;
-    if (pauseUnpauseCommand(message)) return;
+    pauseUnpauseCommand(message);
+    if (isPaused()) return;
+
+    //Handle commands
     normalCommands.forEach(comm => comm(message))
-    normalAwaitCommands.forEach(async awComm => await awComm(message))
-    
+
+    //Handle async commands
+    normalAsyncCommands.forEach(async awComm => await awComm(message))
 });
+//Handle interactions
 client.ws.on('INTERACTION_CREATE', async interaction => {
     if (isPaused()) return;
-    console.log(interaction)
-    if (interaction.data.name == "tag") {
-        client.api.interactions(interaction.id, interaction.token).callback.post({
-            data: {
-                type: 4,
-                data: {
-                    content: `<@${interaction.data.options[0].value}>`
-                }
-            }
-        })
-    }
-    if (interaction.data.name == "remote") {
-        var guild = client.guilds.cache.get(interaction.guild_id)
-        var channelToSend = guild.channels.cache.get(interaction.data.options[0].value);
-        var channelSentIn = guild.channels.cache.get(interaction.channel_id);
-        if (interaction.member.roles.includes(config.roles.remote)) {
-            if (channelToSend instanceof Discord.TextChannel) {
-                channelToSend.send(interaction.data.options[1].value)
-            }
-        } else {
-            if (channelSentIn instanceof Discord.TextChannel) {
-                channelSentIn.send("You dont have the permissions to do that")
-            }
-        }
-        client.api.interactions(interaction.id, interaction.token).callback.post({
-            data: {
-                type: 2
-            }
-        })
-    }
+
+    //Log interaction
+    console.log(stringify(interaction))
+
+    //Handle slash commands
+    normalSlashCommands.forEach(slashComm => slashComm.action(client, interaction))
     
 })
+//Login
 client.login(config.token);
-client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.post({
-    data: {
-        name: 'tag',
-        description: 'pings a person',
-        options: [
-            {
-                "name": "member",
-                "description": "Who to @",
-                "type": 6,
-                "required": true
-            }
-        ]
-    }
-})
-client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.post({
-    data: {
-        name: 'remote',
-        description: 'pings a person',
-        options: [
-            {
-                "name": "channel",
-                "description": "Channel to send message to",
-                "type": 7,
-                "required": true
-            },
-            {
-                "name": "message",
-                "description": "The message to send",
-                "type": 3,
-                "required": true
-            }
-        ]
-    }
-})
 
-client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.get().then(a => console.log(a))
+//Define or redefine slash commands
+normalSlashCommands.forEach(slashComm => client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.post(slashComm.definition))
+
+//Log all commands
+client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.get().then(a => console.log(stringify(a)))
 

@@ -11,7 +11,6 @@ module.exports = {
             message.channel.send("Paused instance this instance of the bot")
             pause = true;
         }
-        return pause;
     },
     isPaused: () => pause
 }
