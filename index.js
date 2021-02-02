@@ -12,12 +12,14 @@ const normalCommands = [
 const normalAsyncCommands = [
     require('./commands/normal/async/timer.js'),
     require('./commands/normal/async/crash.js'),
-    require('./commands/normal/async/guess.js'),
-    require('./commands/normal/async/tts.js')
+    require('./commands/normal/async/guess.js')
 ]
 const normalSlashCommands = [
     require('./slash_commands/tag.js'),
-    require('./slash_commands/remote.js')
+    require('./slash_commands/remote.js'),
+]
+const asyncSlashCommands = [
+    require('./slash_commands/indian.js')
 ]
 const client = new Discord.Client();
 client.once('ready', () => {
@@ -48,6 +50,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
 
     //Handle slash commands
     normalSlashCommands.forEach(slashComm => slashComm.action(interaction, client))
+    asyncSlashCommands.forEach(async slashComm => await slashComm.action(interaction, client))
     
 })
 //Login
@@ -55,6 +58,7 @@ client.login(config.token);
 
 //Define or redefine slash commands
 normalSlashCommands.forEach(slashComm => client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.post(slashComm.definition))
+asyncSlashCommands.forEach(slashComm => client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.post(slashComm.definition))
 
 //Log all commands
 client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.get().then(a => console.log(stringify(a)))
