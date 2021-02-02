@@ -19,9 +19,6 @@ module.exports = async (message, client) => {
 
         } catch (e) {
             console.log("Error", e);
-        } finally {
-            if (fs.existsSync(filename)) fs.unlinkSync(filename)
-
         }
     }
 }
