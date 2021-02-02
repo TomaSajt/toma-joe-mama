@@ -22,7 +22,7 @@ module.exports.definition = {
 
     }
 }
-module.exports.action = (client, interaction) => {
+module.exports.action = (interaction, client) => {
     if (interaction.data.name == "remote") {
         var guild = client.guilds.cache.get(interaction.guild_id)
         var channelToSend = guild.channels.cache.get(interaction.data.options[0].value);
@@ -38,7 +38,7 @@ module.exports.action = (client, interaction) => {
         }
         client.api.interactions(interaction.id, interaction.token).callback.post({
             data: {
-                type: 2
+                type: 2 //ack
             }
         })
     }

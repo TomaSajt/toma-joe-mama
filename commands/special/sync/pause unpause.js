@@ -1,7 +1,7 @@
 const config = require('../../../config.json');
 var pause = false;
 module.exports = {
-    pauseUnpauseCommand: message => {
+    pauseUnpauseCommand: (message, client) => {
         var text = message.content.toLowerCase()
         if (pause && text == `${config.prefix}unpause`) {
             message.channel.send("Unpaused instance this instance of the bot")

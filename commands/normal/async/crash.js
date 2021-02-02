@@ -1,6 +1,6 @@
 const config = require('../../../config.json');
 var crashing = false;
-module.exports = async message => {
+module.exports = async (message, client) => {
     var text = message.content.toLowerCase()
     if (text == `${config.prefix}crash`) {
         if (message.member.id == config.members.toma) {

@@ -11,7 +11,8 @@ const normalCommands = [
 ]
 const normalAsyncCommands = [
     require('./commands/normal/async/timer.js'),
-    require('./commands/normal/async/crash.js')
+    require('./commands/normal/async/crash.js'),
+    require('./commands/normal/async/guess.js')
 ]
 const normalSlashCommands = [
     require('./slash_commands/tag.js'),
@@ -45,7 +46,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
     console.log(stringify(interaction))
 
     //Handle slash commands
-    normalSlashCommands.forEach(slashComm => slashComm.action(client, interaction))
+    normalSlashCommands.forEach(slashComm => slashComm.action(interaction, client))
     
 })
 //Login

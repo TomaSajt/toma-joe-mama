@@ -1,5 +1,5 @@
 const config = require('../../../config.json');
-module.exports = async message => {
+module.exports = async (message, client) => {
     var text = message.content.toLowerCase()
     if (text.startsWith(`${config.prefix}timer`)) {
         var args = message.content.substring(`${config.prefix}timer`.length).trim().split().filter(str => str != "");

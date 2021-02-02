@@ -15,14 +15,16 @@ module.exports.definition = {
         ]
     }
 }
-module.exports.action = (client, interaction) => {
+module.exports.action = (interaction, client) => {
     if (interaction.data.name == "tag") {
+        var guild = client.guilds.cache.get(interaction.guild_id)
+        var channel = guild.channels.cache.get(interaction.channel_id)
+        if (channel instanceof Discord.TextChannel) {
+            channel.send(`<@${interaction.data.options[0].value }>`)
+        }
         client.api.interactions(interaction.id, interaction.token).callback.post({
             data: {
-                type: 4,
-                data: {
-                    content: `<@${interaction.data.options[0].value}>`
-                }
+                type: 2 //ack
             }
         })
     }
