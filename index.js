@@ -7,7 +7,8 @@ const normalCommands = [
     require('./commands/normal/sync/joe mama.js'),
     require('./commands/normal/sync/whos joe.js'),
     require('./commands/normal/sync/help.js'),
-    require('./commands/normal/sync/pog.js')
+    require('./commands/normal/sync/pog.js'),
+    require('./commands/normal/sync/shuffle.js')
 ]
 const normalAsyncCommands = [
     require('./commands/normal/async/timer.js'),
