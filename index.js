@@ -13,7 +13,8 @@ const normalCommands = [
 const normalAsyncCommands = [
     require('./commands/normal/async/timer.js'),
     require('./commands/normal/async/crash.js'),
-    require('./commands/normal/async/guess.js')
+    require('./commands/normal/async/guess.js'),
+    require('./commands/normal/async/gbruh.js')
 ]
 const normalSlashCommands = [
     require('./slash_commands/tag.js'),
@@ -58,8 +59,8 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
 client.login(config.token);
 
 //Define or redefine slash commands
-normalSlashCommands.forEach(slashComm => client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.post(slashComm.definition))
-asyncSlashCommands.forEach(slashComm => client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.post(slashComm.definition))
+//normalSlashCommands.forEach(slashComm => client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.post(slashComm.definition))
+//asyncSlashCommands.forEach(slashComm => client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.post(slashComm.definition))
 
 //Log all commands
 client.api.applications(config.app_id).guilds(config.guilds.nyf).commands.get().then(a => console.log(stringify(a)))
