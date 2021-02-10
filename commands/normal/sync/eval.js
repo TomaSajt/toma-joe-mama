@@ -3,7 +3,6 @@ const { Message, Client } = require('discord.js');
 module.exports = (message, client) => {
     if (message instanceof Message) {
         console.log('asd')
-        message.ed
         var text = message.content.toLowerCase()
         if (text.startsWith(`${config.prefix}eval`)) {
             if (message.member.id == config.members.toma) {
