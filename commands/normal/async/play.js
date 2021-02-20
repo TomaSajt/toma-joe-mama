@@ -8,9 +8,12 @@ module.exports = async (message, client) => {
             try {
                 var args = message.content.substring(`${config.prefix}play`.length).trim().split().filter(str => str != "");
                 var voiceConnection = await message.member.voice.channel.join();
-                /*const broadcast = client.voice.createBroadcast();
-                broadcast.play(await ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ'), { type: 'opus' });
-                voiceConnection.play(broadcast);*/
+                const broadcast = client.voice.createBroadcast();
+                ytdl('https://www.youtube.com/watch?v=dQw4w9WgXcQ').then(stream => {
+                    broadcast.play(stream, { type: 'opus' });
+                    voiceConnection.play(broadcast);
+                }).catch(e => console.log(e));
+
             } catch (e) {
                 console.log(e);
             }
