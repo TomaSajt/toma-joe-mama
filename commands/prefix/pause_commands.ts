@@ -1,4 +1,4 @@
-﻿import { PrefixCommand } from "../modules/commandutils";
+﻿import { PrefixCommand } from "../../modules/commandutils";
 
 export const pause = new PrefixCommand({
     names: ['pause'],

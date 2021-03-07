@@ -1,4 +1,4 @@
-﻿import { PrefixCommand } from "../modules/commandutils";
+﻿import { PrefixCommand } from "../../modules/commandutils";
 
 export const test = new PrefixCommand({
     names: ['test'],

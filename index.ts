@@ -16,10 +16,15 @@ async function createHandler() {
         pchArgs: {
             prefix: 'joe!',
             commands: [
-                (await import('./prefixcommands/test_commands')).test,
-                (await import('./prefixcommands/test_commands')).ping,
-                (await import('./prefixcommands/pause_commands')).pause,
-                (await import('./prefixcommands/pause_commands')).unpause
+                (await import('./commands/prefix/test_commands')).test,
+                (await import('./commands/prefix/test_commands')).ping,
+                (await import('./commands/prefix/pause_commands')).pause,
+                (await import('./commands/prefix/pause_commands')).unpause
+            ]
+        },
+        ichArgs: {
+            commands: [
+                (await import('./commands/includes/react_commands')).pog
             ]
         }
     });
