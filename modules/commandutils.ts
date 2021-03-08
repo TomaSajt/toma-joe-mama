@@ -1,4 +1,5 @@
 import Discord, { TextChannel } from 'discord.js'
+import {Interaction} from './discord_type_extension'
 import * as config from '../config.json'
 
 type ComplexHandlerArgs = {
@@ -47,7 +48,7 @@ type SlashCommandArgs = {
     adminOnly?: boolean,
     bypassPause?: boolean,
     definition: any,
-    action: (client: Discord.Client, interaction: any, prefixCommandHandler: SlashCommandHandler) => void
+    action: (client: Discord.Client, interaction: Interaction, slashCommandHandler: SlashCommandHandler) => void
 }
 
 export class ComplexHandler {
@@ -156,15 +157,15 @@ export class SlashCommandHandler {
         this.commands.forEach(cmd => client.api.applications(client.user?.id).guilds(config.guilds.nyf).commands.post(cmd.definition))
         //@ts-ignore
         client.ws.on('INTERACTION_CREATE', interaction => {
-            this.handleInteraction(interaction);
+            this.handleInteraction(interaction as Interaction);
         })
     }
-    private handleInteraction(interaction: any) {
-        console.log(JSON.stringify(interaction, null, 2))
+    private handleInteraction(interaction: Interaction) {
+        console.log(interaction)
         this.commands.forEach(cmd => {
-            var flag1 = interaction.data.name == cmd.definition.data.name
+            var flag1 = interaction?.data?.name == cmd.definition.data.name
 
-            var flag2 = !cmd.adminOnly || this.handler.admins.includes(interaction.member.user.id)
+            var flag2 = !cmd.adminOnly || this.handler.admins.includes(interaction.member!.user.id)
 
             var flag3 = !this.handler.paused || cmd.bypassPause
 
@@ -173,8 +174,8 @@ export class SlashCommandHandler {
                 cmd.action(this.client, interaction, this)
             }
             if (flag3 && !flag2) {
-                var guild = this.client.guilds.cache.get(interaction.guild_id)!
-                var channelSentIn = guild.channels.cache.get(interaction.channel_id)!
+                var guild = this.client.guilds.cache.get(interaction.guild_id!)!
+                var channelSentIn = guild.channels.cache.get(interaction.channel_id!)!
                 if (channelSentIn instanceof Discord.TextChannel) {
                     channelSentIn.send("Insufficient permissions.")
                 }
@@ -248,7 +249,7 @@ export class IncludesReactCommand extends IncludesCommand {
 }
 
 export class SlashCommand implements Command {
-    readonly action: (client: Discord.Client, message: Discord.Message, slashCommandHandler: SlashCommandHandler) => void
+    readonly action: (client: Discord.Client, interaction: Interaction, slashCommandHandler: SlashCommandHandler) => void
     readonly definition: any
     adminOnly: boolean
     bypassPause: boolean

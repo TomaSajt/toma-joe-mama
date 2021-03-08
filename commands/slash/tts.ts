@@ -92,10 +92,10 @@ export const cmd = new SlashCommand({
         }
     },
     action: (client, interaction) => {
-        var guild = client.guilds.cache.get(interaction.guild_id)
-        var channel = guild?.channels.cache.get(interaction.channel_id)
+        var guild = client.guilds.cache.get(interaction.guild_id!)!
+        var channel = guild.channels.cache.get(interaction.channel_id!)
 
-        var gtts = new gTTS(interaction.data.options[0].value, interaction.data.options[1].value);
+        var gtts = new gTTS(interaction.data!.options![0].value, interaction.data!.options![1].value);
         gtts.save(filename, function (err: string | undefined, result: any) {
             if (err) { throw new Error(err); }
             console.log("Text to speech converted!");

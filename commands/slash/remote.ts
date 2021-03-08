@@ -25,11 +25,11 @@ export const cmd = new SlashCommand({
         }
     },
     action: (client, interaction) => {
-        var guild = client.guilds.cache.get(interaction.guild_id)!
-        var channelToSend = guild.channels.cache.get(interaction.data.options[0].value)!;
-        var channelSentIn = guild.channels.cache.get(interaction.channel_id)!;
+        var guild = client.guilds.cache.get(interaction.guild_id!)!
+        var channelToSend = guild.channels.cache.get(interaction.data!.options![0].value!)!;
+        var channelSentIn = guild.channels.cache.get(interaction.channel_id!)!;
         if (channelToSend instanceof Discord.TextChannel) {
-            channelToSend.send(interaction.data.options[1].value)
+            channelToSend.send(interaction.data!.options![1].value)
         }
         //@ts-ignore
         client.api.interactions(interaction.id, interaction.token).callback.post({

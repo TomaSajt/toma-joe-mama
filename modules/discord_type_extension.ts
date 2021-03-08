@@ -46,6 +46,7 @@ export type ApplicationCommandInteractionData = {
 
 export type ApplicationCommandInteractionDataOption = {
     name: string,
-    value?: OptionType,
+    type: OptionType
+    value?: any,
     options?: ApplicationCommandInteractionDataOption[]
 }

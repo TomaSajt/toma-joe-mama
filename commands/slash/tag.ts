@@ -18,10 +18,10 @@ export const cmd = new SlashCommand({
         }
     },
     action: (client, interaction) => {
-        var guild = client.guilds.cache.get(interaction.guild_id)!
-        var channel = guild.channels.cache.get(interaction.channel_id)
+        var guild = client.guilds.cache.get(interaction.guild_id!)!
+        var channel = guild.channels.cache.get(interaction.channel_id!)
         if (channel instanceof Discord.TextChannel) {
-            channel.send(`<@${interaction.data.options[0].value}>`)
+            channel.send(`<@${interaction.data!.options![0].value}>`)
         }
         //@ts-ignore
         client.api.interactions(interaction.id, interaction.token).callback.post({
