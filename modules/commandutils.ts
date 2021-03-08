@@ -160,7 +160,7 @@ export class SlashCommandHandler {
         })
     }
     private handleInteraction(interaction: any) {
-        console.log(interaction)
+        console.log(JSON.stringify(interaction, null, 2))
         this.commands.forEach(cmd => {
             var flag1 = interaction.data.name == cmd.definition.data.name
 
