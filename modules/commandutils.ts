@@ -1,6 +1,7 @@
 import Discord, { TextChannel } from 'discord.js'
-import {Interaction} from './discord_type_extension'
+import { Interaction, Definition } from './discord_type_extension'
 import * as config from '../config.json'
+import * as SlashUtils from './slash_utils'
 
 type ComplexHandlerArgs = {
     client: Discord.Client,
@@ -19,13 +20,6 @@ type IncludesCommandHandlerArgs = {
 type SlashCommandHandlerArgs = {
     commands: SlashCommand[]
 }
-
-type CommandArgs = {
-    adminOnly?: boolean,
-    bypassPause?: boolean,
-    botExecutable?: boolean
-}
-
 type PrefixCommandArgs = {
     adminOnly?: boolean,
     bypassPause?: boolean,
@@ -47,7 +41,7 @@ type IncludesReactCommandArgs = {
 type SlashCommandArgs = {
     adminOnly?: boolean,
     bypassPause?: boolean,
-    definition: any,
+    definition: Definition,
     action: (client: Discord.Client, interaction: Interaction, slashCommandHandler: SlashCommandHandler) => void
 }
 
@@ -152,18 +146,28 @@ export class SlashCommandHandler {
         this.client = client
         this.handler = handler
         this.commands = args.commands
+        const register = async () => {
+            console.log('Started registering slash commands')
+            await SlashUtils.registerCommands(client, this.commands).then(() => {
+                console.log('Done registering slash commands')
+                //@ts-ignore
+                client.ws.on('INTERACTION_CREATE', interaction => {
+                    this.handleInteraction(interaction as Interaction);
+                })
+            })
+            
+        }
+        register()
+        
 
-        //@ts-ignore
-        this.commands.forEach(cmd => client.api.applications(client.user?.id).guilds(config.guilds.nyf).commands.post(cmd.definition))
-        //@ts-ignore
-        client.ws.on('INTERACTION_CREATE', interaction => {
-            this.handleInteraction(interaction as Interaction);
-        })
     }
+
+
+
     private handleInteraction(interaction: Interaction) {
         console.log(interaction)
         this.commands.forEach(cmd => {
-            var flag1 = interaction?.data?.name == cmd.definition.data.name
+            var flag1 = interaction?.data?.name == cmd.definition.name
 
             var flag2 = !cmd.adminOnly || this.handler.admins.includes(interaction.member!.user.id)
 
@@ -183,18 +187,6 @@ export class SlashCommandHandler {
         })
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 export interface Command {
     adminOnly: boolean
@@ -218,7 +210,6 @@ export class PrefixCommand implements Command {
     }
 }
 
-
 export class IncludesCommand implements Command {
     readonly names: string[]
     readonly action: (client: Discord.Client, message: Discord.Message, includesCommandHandler: IncludesCommandHandler) => void
@@ -235,7 +226,6 @@ export class IncludesCommand implements Command {
     }
 }
 
-
 export class IncludesReactCommand extends IncludesCommand {
     constructor(args: IncludesReactCommandArgs) {
         super({
@@ -250,7 +240,7 @@ export class IncludesReactCommand extends IncludesCommand {
 
 export class SlashCommand implements Command {
     readonly action: (client: Discord.Client, interaction: Interaction, slashCommandHandler: SlashCommandHandler) => void
-    readonly definition: any
+    readonly definition: Definition
     adminOnly: boolean
     bypassPause: boolean
     botExecutable: boolean

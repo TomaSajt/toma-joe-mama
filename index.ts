@@ -7,7 +7,6 @@ require('dotenv').config()
 
 client.once('ready', onReady)
 client.login(process.env.TOKEN)
-
 async function onReady() {
     console.log(`Logged in with user id ${client.user!.id}`)
     new ComplexHandler({
@@ -31,9 +30,7 @@ async function onReady() {
         },
         slashCommandHandlerArgs: {
             commands: [
-                (await import('./commands/slash/tts')).cmd,
-                (await import('./commands/slash/remote')).cmd,
-                (await import('./commands/slash/tag')).cmd
+                (await import('./commands/slash/tts')).cmd
             ]
         }
     });

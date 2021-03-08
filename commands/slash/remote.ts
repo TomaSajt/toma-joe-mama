@@ -4,25 +4,23 @@ import Discord from 'discord.js';
 export const cmd = new SlashCommand({
 
     definition: {
-        data: {
-            name: 'remote',
-            description: 'Sends a given message to the given channel',
-            options: [
-                {
-                    "name": "channel",
-                    "description": "Channel to send message to",
-                    "type": 7,
-                    "required": true
-                },
-                {
-                    "name": "message",
-                    "description": "The message to send",
-                    "type": 3,
-                    "required": true
-                }
-            ]
+        name: 'remote',
+        description: 'Sends a given message to the given channel',
+        options: [
+            {
+                name: "channel",
+                description: "Channel to send message to",
+                type: 7,
+                required: true
+            },
+            {
+                name: "message",
+                description: "The message to send",
+                type: 3,
+                required: true
+            }
+        ]
 
-        }
     },
     action: (client, interaction) => {
         var guild = client.guilds.cache.get(interaction.guild_id!)!

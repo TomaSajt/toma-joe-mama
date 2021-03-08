@@ -8,6 +8,12 @@ export type ApplicationCommand = {
     options?: ApplicationCommandOption[]
 }
 
+export type Definition = {
+    name: string,
+    description: string
+    options?: ApplicationCommandOption[]
+}
+
 export type ApplicationCommandOption = {
     type: number,
     name: string,
