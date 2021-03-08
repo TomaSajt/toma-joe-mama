@@ -148,17 +148,16 @@ export class SlashCommandHandler {
         this.commands = args.commands
         const register = async () => {
             console.log('Started registering slash commands')
-            await SlashUtils.registerCommands(client, this.commands).then(() => {
-                console.log('Done registering slash commands')
-                //@ts-ignore
-                client.ws.on('INTERACTION_CREATE', interaction => {
-                    this.handleInteraction(interaction as Interaction);
-                })
+            await SlashUtils.registerCommands(client, this.commands)
+            console.log('Done registering slash commands')
+
+            //@ts-ignore
+            client.ws.on('INTERACTION_CREATE', interaction => {
+                this.handleInteraction(interaction as Interaction);
             })
-            
+
         }
         register()
-        
 
     }
 

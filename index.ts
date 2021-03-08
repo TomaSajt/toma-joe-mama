@@ -30,7 +30,9 @@ async function onReady() {
         },
         slashCommandHandlerArgs: {
             commands: [
-                (await import('./commands/slash/tts')).cmd
+                (await import('./commands/slash/tts')).cmd,
+                (await import('./commands/slash/remote')).cmd,
+                (await import('./commands/slash/tag')).cmd
             ]
         }
     });
