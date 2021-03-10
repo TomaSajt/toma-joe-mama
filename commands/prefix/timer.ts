@@ -4,23 +4,23 @@ export const cmd = new PrefixCommand({
     names: ['timer'],
     bypassPause: false,
     adminOnly: true,
-    action: async args => {
-        var key = args.pch.prefix + args.name
-        var inputArgs = args.message.content.substring(args.message.content.indexOf(key) + key.length).trim().split(' ').filter(str => str != "");
+    action: async ({pch, name, message}) => {
+        var key = pch.prefix + name
+        var inputArgs = message.content.substring(message.content.indexOf(key) + key.length).trim().split(' ').filter(str => str != "");
         if (inputArgs.length == 1) {
             var n = parseInt(inputArgs[0])
             if (n) {
-                var m = await args.message.channel.send(`starting countdown for ${n} seconds`)
+                var m = await message.channel.send(`starting countdown for ${n} seconds`)
                 for await (var remaining of countdown(n)) {
                     if (m.deleted) break;
                     m.edit(remaining)
                 }
-                if (!m.deleted) args.message.channel.send('countdown over')
+                if (!m.deleted) message.channel.send('countdown over')
             } else {
-                args.message.channel.send("Argument not of type 'number'")
+                message.channel.send("Argument not of type 'number'")
             }
         } else {
-            args.message.channel.send('Ivalid argument amount')
+            message.channel.send('Ivalid argument amount')
         }
     }
 });

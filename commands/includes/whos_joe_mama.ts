@@ -2,7 +2,7 @@ import { IncludesCommand } from "../../modules/commandutils";
 
 export const joe_mama = new IncludesCommand({
 	names: ['joe mama'],
-	action: (client, message) => {
+	action: ({message}) => {
 		message.channel.send(`> You are almost as funny as me ${message.author}`, { files: [randomPicture()] })
 	}
 })
@@ -16,7 +16,7 @@ function randomPicture(): string {
 }
 export const whos_joe = new IncludesCommand({
 	names: ["who's joe", "who is joe", "whos joe", "who s joe"],
-	action: (client, message) => {
+	action: ({message}) => {
 		message.channel.send("joe mama")
 	}
 })

@@ -1,6 +1,5 @@
-import Discord from 'discord.js'
+﻿import Discord from 'discord.js'
 import { ComplexHandler } from './modules/commandutils'
-import * as Karesz from './modules/karesz'
 import * as config from './config.json'
 const client = new Discord.Client({ ws: { intents: new Discord.Intents(Discord.Intents.ALL) } })
 require('dotenv').config()
@@ -8,7 +7,6 @@ require('dotenv').config()
 
 client.once('ready', onReady)
 client.login(process.env.TOKEN)
-
 
 
 async function onReady() {

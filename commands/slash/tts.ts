@@ -89,7 +89,7 @@ export const cmd = new SlashCommand({
             }
         ]
     },
-    action: (client, interaction) => {
+    action: ({ client, interaction }) => {
         var guild = client.guilds.cache.get(interaction.guild_id!)!
         var channel = guild.channels.cache.get(interaction.channel_id!)
 

@@ -5,12 +5,12 @@ export const gbruh = new PrefixCommand({
     names: ['gbruh'],
     bypassPause: false,
     adminOnly: true,
-    action: async args => {
-        var key = args.pch.prefix + args.name
-        var searchArgs = args.message.content.substring(args.message.content.indexOf(key) + key.length).trim().split(' ').filter(str => str != "");
+    action: async ({pch, message, name}) => {
+        var key = pch.prefix + name
+        var searchArgs = message.content.substring(message.content.indexOf(key) + key.length).trim().split(' ').filter(str => str != "");
         var json = await gbSearch(searchArgs, 3)
         var str = json.map(entry => entry.file_url).reduce((allRows, nextRow) => allRows + "\n" + nextRow)
-        args.message.channel.send(str)
+        message.channel.send(str)
     }
 });
 

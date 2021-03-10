@@ -1,6 +1,5 @@
 import Discord, { TextChannel } from 'discord.js'
 import { Interaction, Definition } from './discord_type_extension'
-import * as config from '../config.json'
 import * as SlashUtils from './slash_utils'
 
 type ComplexHandlerArgs = {
@@ -38,7 +37,7 @@ type IncludesCommandArgs = {
     bypassPause?: boolean,
     botExecutable?: boolean,
     names: string[],
-    action: (client: Discord.Client, message: Discord.Message, includesCommandHandler: IncludesCommandHandler) => void
+    action: (args: IncludesCommandActionArgs) => void
 }
 type IncludesReactCommandArgs = {
     names: string[],
@@ -48,13 +47,25 @@ type SlashCommandArgs = {
     adminOnly?: boolean,
     bypassPause?: boolean,
     definition: Definition,
-    action: (client: Discord.Client, interaction: Interaction, slashCommandHandler: SlashCommandHandler) => void
+    action: (args: SlashCommandActionArgs) => void
 }
+
 type PrefixCommandActionArgs = {
     client: Discord.Client,
     message: Discord.Message,
     pch: PrefixCommandHandler,
     name: string
+}
+type IncludesCommandActionArgs = {
+    client: Discord.Client,
+    message: Discord.Message,
+    ich: IncludesCommandHandler,
+    name: string
+}
+type SlashCommandActionArgs = {
+    client: Discord.Client,
+    interaction: Interaction,
+    sch: SlashCommandHandler
 }
 
 export class ComplexHandler {
@@ -82,11 +93,11 @@ export class PrefixCommandHandler {
     readonly prefix: string
     readonly handler: ComplexHandler
 
-    constructor(client: Discord.Client, handler: ComplexHandler, args: PrefixCommandHandlerArgs) {
+    constructor(client: Discord.Client, handler: ComplexHandler, { commands, prefix }: PrefixCommandHandlerArgs) {
         this.client = client
         this.handler = handler
-        this.prefix = args.prefix
-        this.commands = args.commands
+        this.prefix = prefix
+        this.commands = commands
 
         client.on('message', message => {
             if (message.content.startsWith(this.prefix)) {
@@ -106,7 +117,7 @@ export class PrefixCommandHandler {
             var flag3 = !message.author.bot || cmd.botExecutable
 
             if (name !== undefined && flag1 && flag2 && flag3) {
-                cmd.action({ client: this.client, message: message, pch: this, name: name })
+                cmd.action({ client: this.client, message, pch: this, name: name })
             }
             if (name !== undefined && flag2 && !flag1) {
                 message.channel.send("Insufficient permissions.")
@@ -120,10 +131,10 @@ export class IncludesCommandHandler {
     private client: Discord.Client
     readonly handler: ComplexHandler
 
-    constructor(client: Discord.Client, handler: ComplexHandler, args: IncludesCommandHandlerArgs) {
+    constructor(client: Discord.Client, handler: ComplexHandler, { commands }: IncludesCommandHandlerArgs) {
         this.client = client
         this.handler = handler
-        this.commands = args.commands
+        this.commands = commands
 
         client.on('message', message => {
             this.handleMessage(message);
@@ -140,7 +151,7 @@ export class IncludesCommandHandler {
             var flag3 = !message.author.bot || cmd.botExecutable
 
             if (name !== undefined && flag1 && flag2 && flag3) {
-                cmd.action(this.client, message, this)
+                cmd.action({ client: this.client, message, ich: this, name })
             }
             if (name !== undefined && flag2 && !flag1) {
                 message.channel.send("Insufficient permissions.")
@@ -154,10 +165,10 @@ export class SlashCommandHandler {
     private client: Discord.Client
     readonly handler: ComplexHandler
 
-    constructor(client: Discord.Client, handler: ComplexHandler, args: SlashCommandHandlerArgs) {
+    constructor(client: Discord.Client, handler: ComplexHandler, { commands }: SlashCommandHandlerArgs) {
         this.client = client
         this.handler = handler
-        this.commands = args.commands
+        this.commands = commands
         const register = async () => {
             console.log('Started registering slash commands')
             await SlashUtils.registerCommands(client, this.commands)
@@ -186,7 +197,7 @@ export class SlashCommandHandler {
 
 
             if (flag1 && flag2 && flag3) {
-                cmd.action(this.client, interaction, this)
+                cmd.action({ client: this.client, interaction, sch: this })
             }
             if (flag3 && !flag2) {
                 var guild = this.client.guilds.cache.get(interaction.guild_id!)!
@@ -204,10 +215,10 @@ export abstract class Command {
     readonly adminOnly: boolean
     readonly bypassPause: boolean
     readonly botExecutable: boolean
-    constructor(args: CommandArgs) {
-        this.adminOnly = args.adminOnly ?? false;
-        this.bypassPause = args.bypassPause ?? false;
-        this.botExecutable = args.botExecutable ?? false
+    constructor({ adminOnly, botExecutable, bypassPause }: CommandArgs) {
+        this.adminOnly = adminOnly ?? false;
+        this.bypassPause = bypassPause ?? false;
+        this.botExecutable = botExecutable ?? false
     }
 }
 
@@ -215,21 +226,21 @@ export class PrefixCommand extends Command {
     readonly names: string[]
     readonly action: (args: PrefixCommandActionArgs) => void
 
-    constructor(args: PrefixCommandArgs) {
-        super({ adminOnly: args.adminOnly, bypassPause: args.bypassPause, botExecutable: args.botExecutable })
-        this.names = args.names;
-        this.action = args.action;
+    constructor({ action, names, adminOnly, botExecutable, bypassPause }: PrefixCommandArgs) {
+        super({ adminOnly, bypassPause, botExecutable })
+        this.names = names;
+        this.action = action;
     }
 }
 
 export class IncludesCommand extends Command {
     readonly names: string[]
-    readonly action: (client: Discord.Client, message: Discord.Message, includesCommandHandler: IncludesCommandHandler) => void
+    readonly action: (args: IncludesCommandActionArgs) => void
 
-    constructor(args: IncludesCommandArgs) {
-        super({ adminOnly: args.adminOnly, bypassPause: args.bypassPause, botExecutable: args.botExecutable })
-        this.names = args.names;
-        this.action = args.action;
+    constructor({ action, names, adminOnly, botExecutable, bypassPause }: IncludesCommandArgs) {
+        super({ adminOnly, bypassPause, botExecutable })
+        this.names = names;
+        this.action = action;
     }
 }
 
@@ -237,7 +248,7 @@ export class IncludesReactCommand extends IncludesCommand {
     constructor(args: IncludesReactCommandArgs) {
         super({
             names: args.names,
-            action: (client, message) => {
+            action: ({ message }) => {
                 message.react(args.emoji)
             },
             botExecutable: true
@@ -246,12 +257,12 @@ export class IncludesReactCommand extends IncludesCommand {
 }
 
 export class SlashCommand extends Command {
-    readonly action: (client: Discord.Client, interaction: Interaction, slashCommandHandler: SlashCommandHandler) => void
+    readonly action: (args: SlashCommandActionArgs) => void
     readonly definition: Definition
 
-    constructor(args: SlashCommandArgs) {
-        super({ adminOnly: args.adminOnly, bypassPause: args.bypassPause, botExecutable: false })
-        this.action = args.action;
-        this.definition = args.definition;
+    constructor({ action, definition, adminOnly, bypassPause }: SlashCommandArgs) {
+        super({ adminOnly, bypassPause, botExecutable: false })
+        this.action = action;
+        this.definition = definition;
     }
 }

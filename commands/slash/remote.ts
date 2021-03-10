@@ -22,7 +22,7 @@ export const cmd = new SlashCommand({
         ]
 
     },
-    action: (client, interaction) => {
+    action: ({ client, interaction }) => {
         var guild = client.guilds.cache.get(interaction.guild_id!)!
         var channelToSend = guild.channels.cache.get(interaction.data!.options![0].value!)!;
         var channelSentIn = guild.channels.cache.get(interaction.channel_id!)!;
