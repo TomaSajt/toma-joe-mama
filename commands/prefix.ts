@@ -4,6 +4,7 @@ const webp = require('webp-converter')
 const fs = require('fs')
 const https = require('https')
 var asciify = require('asciify-image');
+import fetch from 'node-fetch'
 
 
 export const cmds = [
@@ -99,6 +100,19 @@ export const cmds = [
         action: ({ message, client }) => { message.channel.send(`🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms`); }
     }),
     new PrefixCommand({
+        names: ['gbruh'],
+        bypassPause: false,
+        adminOnly: true,
+        action: async ({ pch, message, name }) => {
+            var key = pch.prefix + name
+            var searchArgs = message.content.substring(message.content.indexOf(key) + key.length).trim().split(' ').filter(str => str != "");
+            var json = await gbSearch(searchArgs, 3)
+            var str = json.map(entry => entry.file_url).reduce((allRows, nextRow) => allRows + "\n" + nextRow)
+            message.channel.send(str)
+            
+        }
+    }),
+    new PrefixCommand({
         names: ['timer'],
         bypassPause: false,
         adminOnly: true,
@@ -136,3 +150,163 @@ export const cmds = [
         }
     })
 ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+//Bruh moment inbound
+
+
+
+
+
+
+
+async function gbSearch(arr: string[], limit: number): Promise<{ file_url: string }[]> {
+    var tagsString = "";
+    arr.forEach(tag => {
+        tagsString += tag + "+"
+    })
+    var response = await fetch(`https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&api_key=69c6a9eec964e78c52f32440132168ea819e2b5947543ccce4589f487ad9ad09&user_id=731181&limit=${limit}&tags=${tagsString}` + tagsString)
+    return await response.json();
+}
