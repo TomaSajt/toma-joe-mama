@@ -1,4 +1,4 @@
-import { Snowflake, GuildMember, User } from "discord.js";
+import { Snowflake, GuildMember, User, MessageEmbed } from "discord.js";
 
 export type ApplicationCommand = {
     id: Snowflake,
@@ -23,8 +23,6 @@ export type ApplicationCommandOption = {
     options?: ApplicationCommandOption[]
 }
 
-export type OptionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
-
 export type ApplicationCommandOptionChoice = {
     name: string,
     value: string | number
@@ -32,7 +30,7 @@ export type ApplicationCommandOptionChoice = {
 
 export type Interaction = {
     id: Snowflake,
-    type: InteractionType,
+    type: 1 | 2,
     data?: ApplicationCommandInteractionData,
     guild_id?: Snowflake,
     channel_id?: Snowflake,
@@ -41,9 +39,6 @@ export type Interaction = {
     token: string,
     version: number
 }
-
-export type InteractionType = 1 | 2
-
 export type ApplicationCommandInteractionData = {
     id: Snowflake,
     name: string,
@@ -52,7 +47,26 @@ export type ApplicationCommandInteractionData = {
 
 export type ApplicationCommandInteractionDataOption = {
     name: string,
-    type: OptionType
+    type: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
     value?: any,
     options?: ApplicationCommandInteractionDataOption[]
+}
+
+export type InteractionResponse = {
+    type: 1 | 2 | 3 | 4 | 5,
+    data?: InteractionApplicationCommandCallbackData
+}
+export type InteractionApplicationCommandCallbackData = {
+    tts?: boolean,
+    content?: string,
+    embeds?: MessageEmbed,
+    allowed_mentions?: AllowedMentions
+    flags?: number
+}
+
+export type AllowedMentions = {
+    parse: ("roles" | "users" | "everyone")[]
+    roles: Snowflake[]
+    users: Snowflake[]
+    replied_user: boolean
 }

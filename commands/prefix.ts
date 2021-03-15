@@ -1,10 +1,8 @@
 ﻿import { MessageEmbed } from "discord.js";
 import { PrefixCommand } from "../modules/commandutils";
-const webp = require('webp-converter')
-const fs = require('fs')
-const https = require('https')
-var asciify = require('asciify-image');
 import fetch from 'node-fetch'
+
+var timerDone = true
 
 
 export const cmds = [
@@ -56,46 +54,6 @@ export const cmds = [
         }
     }),
     new PrefixCommand({
-        names: ['member'],
-        action: ({ message }) => {
-            if (!fs.existsSync('avatars')) {
-                fs.mkdirSync('avatars')
-            }
-            var arr = message.content.trim().split(' ')
-            var victim = message.guild!.members.cache.get(arr[arr.length - 1])!
-            const url = victim.user.avatarURL({ dynamic: true })!
-            const extension = url.substring(url.lastIndexOf('.') + 1)
-            const path = "avatars/." + extension;
-            const file = fs.createWriteStream(path);
-            console.log(extension)
-            const request = https.get(url, function (response: any) {
-
-                response.pipe(file)
-                if (extension == 'webp') {
-                    const result = webp.dwebp(path, "avatars/done.png", "-o");
-                    result.then((response: any) => {
-                        asciifyPath('avatars/done.png')
-                    });
-                } else if (extension == 'gif') {
-                    asciifyPath('avatars/.gif')
-                }
-            });
-            function asciifyPath(path: string) {
-                var options = {
-                    fit: 'box',
-                    width: 62,
-                    height: 31
-                }
-                asciify(path, options, function (err: any, asciified: any) {
-                    if (err) throw err;
-                    // Print to console
-                    console.log(asciified);
-                });
-            }
-
-        }
-    }),
-    new PrefixCommand({
         names: ['ping', 'ping-me', 'ping-pong'],
         action: ({ message, client }) => { message.channel.send(`🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms`); }
     }),
@@ -103,34 +61,48 @@ export const cmds = [
         names: ['gbruh'],
         bypassPause: false,
         adminOnly: true,
-        action: async ({message, args }) => {
+        action: async ({ message, args }) => {
             var json = await gbSearch(args, 3)
             var str = json.map(entry => entry.file_url).reduce((allRows, nextRow) => allRows + "\n" + nextRow)
             message.channel.send(str)
-            
+
+            async function gbSearch(searchTerms: string[], limit: number): Promise<{ file_url: string }[]> {
+                var response = await fetch(`${process.env.GBLINK}limit=${limit}&tags=${searchTerms.join('+')}`)
+                return await response.json();
+            }
         }
     }),
     new PrefixCommand({
         names: ['timer'],
         bypassPause: false,
         adminOnly: true,
-        action: async ({message, args }) => {
+        action: async ({ message, args }) => {
             if (args.length == 1) {
                 var n = parseInt(args[0])
-                if (n) {
-                    var m = await message.channel.send(`starting countdown for ${n} seconds`)
-                    for await (var remaining of countdown(n)) {
-                        if (m.deleted) break;
-                        m.edit(remaining)
+                if (n || n == 0) {
+                    if (n >= 1 && n <= 300) {
+                        if (timerDone) {
+                            timerDone = false
+                            var m = await message.channel.send(`starting countdown for ${n} seconds`)
+                            for await (var remaining of countdownGenerator(n)) {
+                                if (m.deleted) break;
+                                m.edit(remaining)
+                            }
+                            if (!m.deleted) message.channel.send('countdown over')
+                            timerDone = true
+                        } else {
+                            message.channel.send("Another timer is currently running")
+                        }
+                    } else {
+                        message.channel.send("You can only start a timer with time between 1 and 300 seconds")
                     }
-                    if (!m.deleted) message.channel.send('countdown over')
                 } else {
                     message.channel.send("Argument not of type 'number'")
                 }
             } else {
                 message.channel.send('Ivalid argument amount')
             }
-            async function* countdown(n: number) {
+            async function* countdownGenerator(n: number) {
                 yield n
                 while (n > 0) {
                     await delay(1000)
@@ -146,163 +118,3 @@ export const cmds = [
         }
     })
 ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-//Bruh moment inbound
-
-
-
-
-
-
-
-async function gbSearch(arr: string[], limit: number): Promise<{ file_url: string }[]> {
-    var tagsString = "";
-    arr.forEach(tag => {
-        tagsString += tag + "+"
-    })
-    var response = await fetch(`${process.env.GBLINK}limit=${limit}&tags=${tagsString}` + tagsString)
-    return await response.json();
-}

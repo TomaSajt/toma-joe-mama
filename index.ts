@@ -22,7 +22,13 @@ async function onReady() {
             commands: (await import('./commands/includes')).cmds
         },
         slashCommandHandlerArgs: {
-            commands: (await import('./commands/slash')).cmds
+            globalCommands:[],
+            guildsCommands: [
+                {
+                    guild_id: config.guilds.nyf,
+                    commands: (await import('./commands/slash')).cmds
+                }
+            ]
         }
     });
 }

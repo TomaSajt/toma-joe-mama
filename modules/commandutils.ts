@@ -1,4 +1,4 @@
-import Discord, { TextChannel } from 'discord.js'
+import Discord, { Snowflake, TextChannel } from 'discord.js'
 import { Interaction, Definition } from './discord_type_extension'
 import * as SlashUtils from './slash_utils'
 
@@ -17,7 +17,11 @@ type IncludesCommandHandlerArgs = {
     commands: IncludesCommand[]
 }
 type SlashCommandHandlerArgs = {
-    commands: SlashCommand[]
+    globalCommands: SlashCommand[]
+    guildsCommands: {
+        guild_id: Snowflake
+        commands: SlashCommand[]
+    }[]
 }
 
 type CommandArgs = {
@@ -173,14 +177,17 @@ export class SlashCommandHandler {
     private client: Discord.Client
     readonly handler: CombinedHandler
 
-    constructor(client: Discord.Client, handler: CombinedHandler, { commands }: SlashCommandHandlerArgs) {
+    constructor(client: Discord.Client, handler: CombinedHandler, { globalCommands, guildsCommands }: SlashCommandHandlerArgs) {
         this.client = client
         this.handler = handler
-        this.commands = commands
+        this.commands = []
         const register = async () => {
-            console.log('Started registering slash commands')
-            await SlashUtils.registerCommands(client, this.commands)
-            console.log('Done registering slash commands')
+            console.log('Started registering guild slash commands')
+            for (const guildCommands of guildsCommands) {
+                this.commands = this.commands.concat(guildCommands.commands)
+                await SlashUtils.registerGuildCommands(client, guildCommands.commands, guildCommands.guild_id)
+            }
+            console.log('Done registering guild slash commands')
 
             //@ts-ignore
             client.ws.on('INTERACTION_CREATE', interaction => {
@@ -204,10 +211,10 @@ export class SlashCommandHandler {
                     //has perms?
                     if (!cmd.adminOnly || this.handler.admins.includes(interaction.member!.user.id)) {
                         cmd.action({ client: this.client, interaction, sch: this })
-                        //@ts-ignore
-                        client.api.interactions(interaction.id, interaction.token).callback.post({
+                        SlashUtils.respondToInteraction(this.client, interaction, {
+                            type: 4,
                             data: {
-                                type: 2 //ack
+                                content: "Done"
                             }
                         })
                     } else {

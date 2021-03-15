@@ -58,10 +58,10 @@ export const cmds = [
             }
 
         }
-        
+
     }),
     new SlashCommand({
-        adminOnly:true,
+        adminOnly: true,
         definition: {
             name: 'as',
             description: 'Sends a message in the name of a persom',
@@ -88,32 +88,20 @@ export const cmds = [
         },
         action: ({ client, interaction }) => {
             console.log('as command')
-            var guild = client.guilds.cache.get(interaction.guild_id!)!
-            var textChannel: TextChannel | undefined = undefined;
-            console.log('5')
-            if (interaction.channel_id) {
-                var csi = guild.channels.cache.get(interaction.channel_id);
+            var guild = client.guilds.cache.get(interaction.guild_id!)
+            if (guild) {
+                if (interaction.data!.options![2]) {
+                    var channel = guild.channels.cache.get(interaction.data!.options![2].value)
+                } else {
+                    var channel = guild.channels.cache.get(interaction.channel_id!)
+                }
+                if (channel instanceof TextChannel) {
+                    channel.send(interaction.data!.options![1].value)
+                }
             }
-            console.log('4')
-            if (interaction.data?.options) {
-                var gc = guild.channels.cache.get(interaction.data.options[2].value)
-            }
-            console.log('3')
-            if (gc instanceof TextChannel) {
-                textChannel = gc;
-            } else if (csi instanceof TextChannel) {
-                textChannel = csi;
-            }
-            console.log('2')
-            if (textChannel) {
-                textChannel.send('hello')
-            } else {
-                console.log("Couldn't find text channel")
-            }
-            console.log('1')
 
         }
-        
+
     }),
     new SlashCommand({
 
