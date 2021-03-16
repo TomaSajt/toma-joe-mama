@@ -1,5 +1,4 @@
 import { TextChannel } from "discord.js";
-import { cwd } from "process";
 import { SlashCommand } from "../modules/commandutils";
 var gTTS = require('gtts')
 var filename = 'tts.mp3'
@@ -86,17 +85,17 @@ export const cmds = [
                 }
             ]
         },
-        action: ({ client, interaction }) => {
+        action: ({ client, interaction, args }) => {
             console.log('as command')
             var guild = client.guilds.cache.get(interaction.guild_id!)
             if (guild) {
-                if (interaction.data!.options![2]) {
-                    var channel = guild.channels.cache.get(interaction.data!.options![2].value)
+                if (args.channel) {
+                    var channel = guild.channels.cache.get(args.channel)
                 } else {
                     var channel = guild.channels.cache.get(interaction.channel_id!)
                 }
                 if (channel instanceof TextChannel) {
-                    channel.send(interaction.data!.options![1].value)
+                    channel.send(args.message)
                 }
             }
 

@@ -1,5 +1,5 @@
-import Discord, { Snowflake, TextChannel } from 'discord.js'
-import { Interaction, Definition } from './discord_type_extension'
+import Discord, { APIMessage, Snowflake, TextChannel } from 'discord.js'
+import { Interaction, Definition, InteractionResponse } from './discord_type_extension'
 import * as SlashUtils from './slash_utils'
 
 type CombinedHandlerArgs = {
@@ -70,7 +70,8 @@ type IncludesCommandActionArgs = {
 type SlashCommandActionArgs = {
     client: Discord.Client,
     interaction: Interaction,
-    sch: SlashCommandHandler
+    sch: SlashCommandHandler,
+    args: any
 }
 
 export class CombinedHandler {
@@ -193,7 +194,6 @@ export class SlashCommandHandler {
             client.ws.on('INTERACTION_CREATE', interaction => {
                 this.handleInteraction(interaction as Interaction);
             })
-
         }
         register()
 
@@ -210,13 +210,21 @@ export class SlashCommandHandler {
                 if (!this.handler.paused || cmd.bypassPause) {
                     //has perms?
                     if (!cmd.adminOnly || this.handler.admins.includes(interaction.member!.user.id)) {
-                        cmd.action({ client: this.client, interaction, sch: this })
-                        SlashUtils.respondToInteraction(this.client, interaction, {
+                        var args: any = {}
+                        if (interaction.data?.options) {
+                            for (const option of interaction.data.options) {
+                                args[option.name] = option.value
+                            }
+                        }
+                        console.log(args);
+                        
+                        cmd.action({ client: this.client, interaction, sch: this, args })
+                        /*SlashUtils.respondToInteraction(this.client, interaction, {
                             type: 4,
                             data: {
-                                content: "Done"
+                                content: "||done||"
                             }
-                        })
+                        })*/
                     } else {
                         this.sendInsufftPerms(interaction)
                     }
