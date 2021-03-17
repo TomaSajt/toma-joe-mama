@@ -22,7 +22,7 @@ export const cmds = [
   new SlashCommand({
     definition: {
       name: "sus",
-      description: "Bruh moment",
+      description: "me when, when amogus",
     },
     action: async ({ channel }) => {
       if (channel instanceof TextChannel) {
@@ -104,7 +104,7 @@ export const cmds = [
     adminOnly: true,
     definition: {
       name: "as",
-      description: "Sends a message in the name of a persom",
+      description: "Sends a message in the name of a person",
       options: [
         {
           name: "member",
@@ -162,7 +162,7 @@ export const cmds = [
             //{ name: "Albanian", value: "sq" },
             { name: "Italian", value: "it" },
             //{ name: "Arabic", value: "ar" },
-            //{ name: "Japanese", value: "ja" },
+            { name: "Japanese", value: "ja" },
             //{ name: "Azerbaijani", value: "az" },
             //{ name: "Kannada", value: "kn" },
             //{ name: "Basque", value: "eu" },
@@ -177,7 +177,7 @@ export const cmds = [
             //{ name: "Macedonian", value: "mk" },
             //{ name: "Chinese Simplified", value: "zh-CN" },
             //{ name: "Malay", value: "ms" },
-            //{ name: "Chinese Traditional", value: "zh-TW" },
+            { name: "Chinese Traditional", value: "zh-TW" },
             //{ name: "Maltese", value: "mt" },
             //{ name: "Croatian", value: "hr" },
             //{ name: "Norwegian", value: "no" },
@@ -190,7 +190,7 @@ export const cmds = [
             { name: "English", value: "en" },
             //{ name: "Romanian", value: "ro" },
             { name: "Esperanto", value: "eo" },
-            //{ name: "Russian", value: "ru" },
+            { name: "Russian", value: "ru" },
             //{ name: "Estonian", value: "et" },
             //{ name: "Serbian", value: "sr" },
             //{ name: "Filipino", value: "tl" },
