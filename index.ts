@@ -16,17 +16,17 @@ async function onReady() {
         admins: [config.members.toma],
         prefixCommandHandlerArgs: {
             prefix: 'joe!',
-            commands: (await import('./commands/prefix')).cmds
+            commands: await (await import('./commands/prefix')).default
         },
         includesCommandHandlerArgs: {
-            commands: (await import('./commands/includes')).cmds
+            commands: await (await import('./commands/includes')).default
         },
         slashCommandHandlerArgs: {
             globalCommands:[],
             guildsCommands: [
                 {
                     guild_id: config.guilds.nyf,
-                    commands: (await import('./commands/slash')).cmds
+                    commands: await (await import('./commands/slash')).default
                 }
             ]
         }
