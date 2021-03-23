@@ -73,7 +73,7 @@ export type SlashCommandActionArgs = {
     sch: SlashCommandHandler,
     args: any,
     guild: Guild,
-    channel: GuildChannel,
+    channel: TextChannel,
     member: GuildMember
 }
 
@@ -223,13 +223,12 @@ export class SlashCommandHandler {
                         var guild = this.client.guilds.cache.get(interaction.guild_id!)!
                         var channel = guild?.channels.cache.get(interaction.channel_id!)!
                         var member = interaction.member!
-                        cmd.action({ client: this.client, interaction, sch: this, args, guild, channel, member })
-                        /*SlashUtils.respondToInteraction(this.client, interaction, {
-                            type: 4,
-                            data: {
-                                content: "||done||"
-                            }
-                        })*/
+                        if (channel instanceof TextChannel) {
+                            cmd.action({ client: this.client, interaction, sch: this, args, guild, channel, member })
+                        }
+                        SlashUtils.respondToInteraction(this.client, interaction, {
+                            type: 2
+                        })
                     } else {
                         this.sendInsufftPerms(interaction)
                     }
