@@ -201,8 +201,10 @@ export class SlashCommandHandler {
 
 
     private handleInteraction(interaction: Interaction) {
+        console.log('got interaction')
         //console.log(interaction)
         this.commands.forEach(async cmd => {
+            console.log('checking ' + cmd.definition.name)
             //name matches?
             if (interaction?.data?.name == cmd.definition.name) {
                 //command not paused?
