@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 export default Promise.all(
   fs
-    .readdirSync(path.join(__dirname, "prefix"))
+    .readdirSync(path.join(__dirname, "prefix")).filter(file => file.endsWith('.ts'))
     .map(
       async (file) =>
         (await import("./prefix/" + file)).default as PrefixCommand
