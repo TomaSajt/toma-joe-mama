@@ -28,11 +28,11 @@ export type CommandArgs = {
     adminOnly?: boolean,
     bypassPause?: boolean,
     botExecutable?: boolean,
-    description?: string,
     hidden?: boolean
 }
 export type PrefixCommandArgs = CommandArgs & {
     names: string[],
+    description?: string,
     action: (args: PrefixCommandActionArgs) => void
 }
 export type IncludesCommandArgs = CommandArgs & {
@@ -201,8 +201,8 @@ export class SlashCommandHandler {
 
 
     private handleInteraction(interaction: Interaction) {
-        console.log(interaction)
-        this.commands.forEach(cmd => {
+        //console.log(interaction)
+        this.commands.forEach(async cmd => {
             //name matches?
             if (interaction?.data?.name == cmd.definition.name) {
                 //command not paused?
@@ -217,9 +217,10 @@ export class SlashCommandHandler {
                         }
                         console.log(args);
                         var guild = this.client.guilds.cache.get(interaction.guild_id!)!
-                        var channel = guild?.channels.cache.get(interaction.channel_id!)!
-                        var member = interaction.member!
+                        var channel = guild.channels.cache.get(interaction.channel_id!)!
+                        var member = await guild.members.fetch(interaction.member?.user.id!)!
                         if (channel instanceof TextChannel) {
+                            console.log('running action')
                             cmd.action({ client: this.client, interaction, sch: this, args, guild, channel, member })
                         }
                         SlashUtils.respondToInteraction(this.client, interaction, {
@@ -235,9 +236,9 @@ export class SlashCommandHandler {
 
     private sendInsufftPerms(interaction: Interaction) {
         var guild = this.client.guilds.cache.get(interaction.guild_id!)!
-        var channelSentIn = guild.channels.cache.get(interaction.channel_id!)!
-        if (channelSentIn instanceof Discord.TextChannel) {
-            channelSentIn.send("Insufficient permissions.")
+        var channel = guild.channels.cache.get(interaction.channel_id!)!
+        if (channel instanceof Discord.TextChannel) {
+            channel.send("Insufficient permissions.")
         }
     }
 }
@@ -247,25 +248,25 @@ export abstract class Command {
     readonly adminOnly: boolean
     readonly bypassPause: boolean
     readonly botExecutable: boolean
-    readonly description?: string
     readonly hidden?: boolean
 
-    constructor({ adminOnly = false, botExecutable = false, bypassPause = false, description, hidden = false }: CommandArgs) {
+    constructor({ adminOnly = false, botExecutable = false, bypassPause = false, hidden = false }: CommandArgs) {
         this.adminOnly = adminOnly;
         this.bypassPause = bypassPause;
         this.botExecutable = botExecutable;
-        this.description = description
         this.hidden = hidden
     }
 }
 
 export class PrefixCommand extends Command {
     readonly names: string[]
+    readonly description?: string
     readonly action: (args: PrefixCommandActionArgs) => void
 
     constructor({ action, names, adminOnly, botExecutable, bypassPause, description, hidden }: PrefixCommandArgs) {
-        super({ adminOnly, bypassPause, botExecutable, description, hidden })
+        super({ adminOnly, bypassPause, botExecutable, hidden })
         this.names = names;
+        this.description = description
         this.action = action;
     }
 }
@@ -274,8 +275,8 @@ export class IncludesCommand extends Command {
     readonly names: string[]
     readonly action: (args: IncludesCommandActionArgs) => void
 
-    constructor({ action, names, adminOnly, botExecutable, bypassPause, description, hidden }: IncludesCommandArgs) {
-        super({ adminOnly, bypassPause, botExecutable, description, hidden })
+    constructor({ action, names, adminOnly, botExecutable, bypassPause, hidden }: IncludesCommandArgs) {
+        super({ adminOnly, bypassPause, botExecutable, hidden })
         this.names = names;
         this.action = action;
     }
@@ -297,8 +298,8 @@ export class SlashCommand extends Command {
     readonly action: (args: SlashCommandActionArgs) => void
     readonly definition: Definition
 
-    constructor({ action, definition, adminOnly, bypassPause, botExecutable, description, hidden }: SlashCommandArgs) {
-        super({ adminOnly, bypassPause, botExecutable, description, hidden })
+    constructor({ action, definition, adminOnly, bypassPause, botExecutable, hidden }: SlashCommandArgs) {
+        super({ adminOnly, bypassPause, botExecutable, hidden })
         this.action = action;
         this.definition = definition;
     }
