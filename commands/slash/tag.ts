@@ -1,4 +1,3 @@
-import { TextChannel } from "discord.js";
 import { SlashCommand } from "../../modules/commandutils";
 
 export default new SlashCommand({

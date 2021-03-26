@@ -1,6 +1,8 @@
 import Discord, { APIMessage, Guild, GuildChannel, GuildMember, Snowflake, TextChannel } from 'discord.js'
-import { Interaction, Definition, InteractionResponse } from './discord_type_extension'
+import { Interaction, Definition, InteractionResponse, ApplicationCommandInteractionDataOption } from './discord_type_extension'
 import * as SlashUtils from './slash_utils'
+import colors from 'colors'
+colors.enable();
 
 export type CombinedHandlerArgs = {
     client: Discord.Client,
@@ -68,7 +70,9 @@ export type SlashCommandActionArgs = {
     args: any,
     guild: Guild,
     channel: TextChannel,
-    member: GuildMember
+    member: GuildMember,
+    subcommand?: string,
+    subcommandgroup?: string
 }
 
 export class CombinedHandler {
@@ -114,22 +118,22 @@ export class PrefixCommandHandler {
             var name = cmd.names.find(name => message.content.startsWith(`${this.prefix}${name}`))
 
             //name matches?
-            if (name) {
-                //command not paused?
-                if (!this.handler.paused || cmd.bypassPause) {
-                    //command can be executed by user/bot
-                    if (!message.author.bot || cmd.botExecutable) {
-                        //has perms?
-                        if (!cmd.adminOnly || (message.member && this.handler.admins.includes(message.member.id))) {
-                            var key = this.prefix + name
-                            var searchArgs = message.content.substring(message.content.indexOf(key) + key.length).trim().split(' ').filter(str => str != "");
-                            cmd.action({ client: this.client, message, pch: this, name: name, args: searchArgs })
-                        } else {
-                            message.channel.send("Insufficient permissions.")
-                        }
-                    }
-                }
+            if (!name) return;
+            //command not paused?
+            if (this.handler.paused && !cmd.bypassPause) return;
+            //command can be executed by user/bot
+            if (message.author.bot && !cmd.botExecutable) return;
+            //has perms?
+            if (cmd.adminOnly && !(message.member && this.handler.admins.includes(message.member.id))) {
+                message.channel.send("Insufficient permissions.")
+                return;
             }
+            var key = this.prefix + name
+            var args = message.content.substring(message.content.indexOf(key) + key.length).trim().split(' ').filter(str => str != "");
+            cmd.action({ client: this.client, message, pch: this, name: name, args })
+
+
+
         })
     }
 }
@@ -152,20 +156,19 @@ export class IncludesCommandHandler {
         this.commands.forEach(cmd => {
             var name = cmd.names.find(name => message.content.toLowerCase().includes(name))
             //name matches?
-            if (name) {
-                //command not paused?
-                if (!this.handler.paused || cmd.bypassPause) {
-                    //command can be executed by user/bot
-                    if (!message.author.bot || cmd.botExecutable) {
-                        //has perms?
-                        if (!cmd.adminOnly || (message.member && this.handler.admins.includes(message.member.id))) {
-                            cmd.action({ client: this.client, message, ich: this, name })
-                        } else {
-                            message.channel.send("Insufficient permissions.")
-                        }
-                    }
-                }
+            if (!name) return;
+            //command not paused?
+            if (this.handler.paused && !cmd.bypassPause) return;
+            //command can be executed by user/bot
+            if (message.author.bot && !cmd.botExecutable) return;
+            //has perms?
+            if (cmd.adminOnly && !(message.member && this.handler.admins.includes(message.member.id))) {
+                message.channel.send("Insufficient permissions.")
+                return;
             }
+
+            cmd.action({ client: this.client, message, ich: this, name })
+
         })
     }
 }
@@ -204,35 +207,52 @@ export class SlashCommandHandler {
         console.log('got interaction')
         //console.log(interaction)
         this.commands.forEach(async cmd => {
-            console.log('checking ' + cmd.definition.name)
             //name matches?
-            if (interaction?.data?.name == cmd.definition.name) {
-                //command not paused?
-                if (!this.handler.paused || cmd.bypassPause) {
-                    //has perms?
-                    if (!cmd.adminOnly || this.handler.admins.includes(interaction.member!.user.id)) {
-                        var args: any = {}
-                        if (interaction.data?.options) {
-                            for (const option of interaction.data.options) {
-                                args[option.name] = option.value
-                            }
-                        }
-                        console.log(args);
-                        var guild = this.client.guilds.cache.get(interaction.guild_id!)!
-                        var channel = guild.channels.cache.get(interaction.channel_id!)!
-                        var member = await guild.members.fetch(interaction.member?.user.id!)!
-                        if (channel instanceof TextChannel) {
-                            console.log('running action')
-                            cmd.action({ client: this.client, interaction, sch: this, args, guild, channel, member })
-                        }
-                        SlashUtils.respondToInteraction(this.client, interaction, {
-                            type: 2
-                        })
-                    } else {
-                        this.sendInsufftPerms(interaction)
-                    }
-                }
+            if (interaction?.data?.name != cmd.definition.name) return;
+            //command not paused?
+            if (this.handler.paused && !cmd.bypassPause) return;
+            //has perms?
+            if (cmd.adminOnly && !this.handler.admins.includes(interaction.member!.user.id)) {
+                this.sendInsufftPerms(interaction)
+                return;
             }
+
+
+            var args: any = {}
+            var argsOptions: ApplicationCommandInteractionDataOption[]
+            var subcommand: string | undefined
+            var subcommandgroup: string | undefined
+            switch (interaction.data.options![0].type) {
+                case 2:
+                    argsOptions = interaction.data.options![0].options![0].options!
+                    subcommand = interaction.data.options![0].options![0].name
+                    subcommandgroup = interaction.data.options![0].name
+                    break;
+                case 1:
+                    argsOptions = interaction.data.options![0].options!
+                    subcommand = interaction.data.options![0].name
+                    break;
+                default:
+                    argsOptions = interaction.data.options!
+                    break;
+            }
+            for (const option of argsOptions) {
+                args[option.name] = option.value
+            }
+            console.log(`${interaction?.data?.name} ${subcommandgroup} ${subcommand}`.yellow)
+            console.log(args);
+            var guild = this.client.guilds.cache.get(interaction.guild_id!)!
+            var channel = guild.channels.cache.get(interaction.channel_id!)!
+            var member = await guild.members.fetch(interaction.member?.user.id!)!
+            if (channel instanceof TextChannel) {
+                cmd.action({ client: this.client, interaction, sch: this, args, guild, channel, member, subcommand, subcommandgroup })
+            }
+            SlashUtils.respondToInteraction(this.client, interaction, {
+                type: 2
+            })
+
+
+
         })
     }
 
