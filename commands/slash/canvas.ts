@@ -103,6 +103,43 @@ export default new SlashCommand({
                         ]
                     },
                     {
+                        name: "rectangle",
+                        description: "Draws a rectangle",
+                        type: 1,
+                        options: [
+                            {
+                                name: "width",
+                                description: "The width of the rectangle",
+                                type: 4,
+                                required: true
+                            },
+                            {
+                                name: "height",
+                                description: "The height of the rectangle",
+                                type: 4,
+                                required: true
+                            },
+                            {
+                                name: "x",
+                                description: "The x coordinate for the top left corner of the square",
+                                type: 4,
+                                required: true
+                            },
+                            {
+                                name: "y",
+                                description: "The y coordinate for the top left corner of the square",
+                                type: 4,
+                                required: true
+                            },
+                            {
+                                name: "color",
+                                description: "The color of the square",
+                                type: 3,
+                                required: true
+                            }
+                        ]
+                    },
+                    {
                         name: "circle",
                         description: "Edit permissions for a role",
                         type: 1,
@@ -202,6 +239,12 @@ async function scg_draw({ args, channel, member, subcommand }: SlashCommandActio
             ctx.save();
             ctx.fillStyle = args.color;
             ctx.fillRect(args.x, args.y, args.side, args.side);
+            ctx.restore();
+            break;
+        case 'rectangle':
+            ctx.save();
+            ctx.fillStyle = args.color;
+            ctx.fillRect(args.x, args.y, args.width, args.height);
             ctx.restore();
             break;
 
