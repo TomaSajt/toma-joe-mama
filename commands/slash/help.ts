@@ -1,5 +1,6 @@
 import { MessageEmbed } from "discord.js";
 import { SlashCommand } from "../../modules/commandutils";
+import { BotEmbed } from "../../modules/embed_utils";
 
 export default new SlashCommand({
     definition: {
@@ -10,9 +11,7 @@ export default new SlashCommand({
         var botMember = guild.members.resolve(client.user?.id!)!
         var ch = sch.handler
         var pch = ch.prefixHandler;
-        var embed = new MessageEmbed()
-            .setAuthor(botMember.displayName, botMember.user.avatarURL({ dynamic: true }) ?? undefined)
-            .setFooter(member.displayName, member.user.avatarURL({ dynamic: true }) ?? undefined)
+        var embed = new BotEmbed(client, guild, member)
             .setColor("#0099ff")
             .setTitle("Help menu")
 
