@@ -19,14 +19,21 @@ export default new SlashCommand({
   action: async ({ args, channel, client, guild, member }) => {
     var response = await fetch(`http://ip-api.com/json/${args.ip}?fields=66846719`)
     var json = await response.json();
-    var embed = new BotEmbed(client, guild, member).setTitle(`Information about ${args.ip}`)
+    console.log(json)
+    var embed = new BotEmbed(client, guild, member).setTitle(`Information about ${args.ip}`).setColor('#00aff4')
     for (const key in json) {
       const value = json[key];
-      embed = embed.addField(key, value != '' && value ? value : '\u200B')
+      var valueToSend = value
+      if (typeof value == 'boolean') {
+        valueToSend = value ? "Yes" : "No"
+      } else if(value == undefined || value == '') {
+        valueToSend = "???"
+      }
+      embed = embed.addField(key, valueToSend, true)
+    }
+    if (json.lat && json.lon) {
+      embed.addField('Location on Google Maps', `https://www.google.com/maps/@${json.lat},${json.lon},15z`)
     }
     channel.send(embed)
-    if (json.lat && json.lon) {
-      channel.send(`https://www.google.com/maps/@${json.lat},${json.lon},15z`)
-    }
   },
 })

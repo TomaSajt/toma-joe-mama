@@ -11,6 +11,7 @@ client.login(process.env.TOKEN)
 
 async function onReady() {
     console.log(`Logged in with user id ${client.user!.id}`)
+    client.on('rateLimit',console.log)
     new CombinedHandler({
         client,
         admins: [config.members.toma],
