@@ -32,7 +32,7 @@ export default new SlashCommand({
       embed = embed.addField(key, valueToSend, true)
     }
     if (json.lat && json.lon) {
-      embed.addField('Location on Google Maps', `https://www.google.com/maps/@${json.lat},${json.lon},15z`)
+      embed.addField('Location on Google Maps', `https://www.google.com/maps/search/${json.lat}+${json.lon}/@${json.lat},${json.lon},15z`)
     }
     channel.send(embed)
   },
