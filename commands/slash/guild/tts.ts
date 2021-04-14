@@ -1,4 +1,4 @@
-import { SlashCommand } from "../../modules/commandutils";
+import { SlashCommand } from "../../../modules/commandutils";
 var gTTS = require("gtts");
 var filename = "tts.mp3";
 

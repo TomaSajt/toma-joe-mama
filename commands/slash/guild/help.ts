@@ -1,6 +1,6 @@
 import { MessageEmbed } from "discord.js";
-import { SlashCommand } from "../../modules/commandutils";
-import { BotEmbed } from "../../modules/embed_utils";
+import { SlashCommand } from "../../../modules/commandutils";
+import { BotEmbed } from "../../../modules/embed_utils";
 
 export default new SlashCommand({
     definition: {

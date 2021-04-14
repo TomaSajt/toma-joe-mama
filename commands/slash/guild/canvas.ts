@@ -1,4 +1,4 @@
-import { SlashCommand, SlashCommandActionArgs } from "../../modules/commandutils";
+import { SlashCommand, SlashCommandActionArgs } from "../../../modules/commandutils";
 import { Canvas, createCanvas, Image, loadImage } from "canvas";
 import { GuildMember, MessageAttachment } from "discord.js";
 

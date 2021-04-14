@@ -1,15 +1,14 @@
 ﻿import Discord from 'discord.js'
-import { CombinedHandler } from './modules/commandutils'
+import { CombinedHandler, CommandLoader, IncludesCommand, PrefixCommand, SlashCommand } from './modules/commandutils'
 import * as config from './config.json'
 const client = new Discord.Client({ ws: { intents: new Discord.Intents(Discord.Intents.ALL) } })
 require('dotenv').config()
-
-
-client.once('ready', onReady)
 client.login(process.env.TOKEN)
 
 
-async function onReady() {
+
+
+client.once('ready', async ()=>{
     console.log(`Logged in with user id ${client.user!.id}`)
     client.on('rateLimit',console.log)
     new CombinedHandler({
@@ -17,19 +16,22 @@ async function onReady() {
         admins: [config.members.toma],
         prefixCommandHandlerArgs: {
             prefix: 'joe!',
-            commands: await (await import('./commands/prefix')).default
+            commands: await new CommandLoader<PrefixCommand>('./commands/prefix').loadCommands()
         },
         includesCommandHandlerArgs: {
-            commands: await (await import('./commands/includes')).default
+            commands: await new CommandLoader<IncludesCommand>('./commands/includes').loadCommands()
         },
         slashCommandHandlerArgs: {
             globalCommands:[],
             guildsCommands: [
                 {
                     guild_id: config.guilds.nyf,
-                    commands: await (await import('./commands/slash')).default
+                    commands: await new CommandLoader<SlashCommand>('./commands/slash/guild').loadCommands()
                 }
             ]
         }
     });
-}
+})
+
+
+

@@ -2,6 +2,8 @@ import Discord, { APIMessage, Guild, GuildChannel, GuildMember, Snowflake, TextC
 import { Interaction, Definition, InteractionResponse, ApplicationCommandInteractionDataOption } from './discord_type_extension'
 import * as SlashUtils from './slash_utils'
 import colors from 'colors'
+import fs from "fs";
+import path from "path";
 colors.enable();
 
 export type CombinedHandlerArgs = {
@@ -335,5 +337,26 @@ export class SlashCommand extends Command {
         super({ adminOnly, bypassPause, botExecutable, hidden })
         this.action = action;
         this.definition = definition;
+    }
+}
+
+export class CommandLoader<T extends Command> {
+    dir: string;
+    constructor(dir: string) {
+        this.dir = dir
+    }
+    loadCommands(): Promise<T[]> {
+        return Promise.all(
+            fs
+                .readdirSync(`${this.dir}`).filter(file => file.endsWith('.ts'))
+                .map(
+                    async (file) => {
+                        var cmd = (await import(`../${this.dir}/${file}`)).default as T
+                        console.log(`Loaded command: ${this.dir}/${file}`)
+                        return cmd
+                    }
+                )
+        );
+
     }
 }
