@@ -13,6 +13,7 @@
         "@types/node-fetch": "^2.5.8",
         "canvas": "^2.7.0",
         "colors": "^1.4.0",
+        "discord-buttons": "^2.4.1",
         "discord.js": "^12.5.1",
         "dotenv": "^8.2.0",
         "gtts": "^0.1.1",
