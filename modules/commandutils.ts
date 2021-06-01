@@ -1,9 +1,10 @@
-import Discord, { APIMessage, Guild, GuildChannel, GuildMember, Snowflake, TextChannel } from 'discord.js'
-import { Interaction, Definition, InteractionResponse, ApplicationCommandInteractionDataOption } from './discord_type_extension'
+import Discord, { APIMessage, Client, Guild, GuildChannel, GuildMember, Snowflake, TextChannel } from 'discord.js'
+import { Interaction, Definition, InteractionResponse, ApplicationCommandInteractionDataOption, ApplicationCommandInteractionData } from './discord_type_extension'
 import * as SlashUtils from './slash_utils'
 import colors from 'colors'
 import fs from "fs";
 import path from "path";
+import { respondToInteraction } from './interaction_utils';
 colors.enable();
 
 export type CombinedHandlerArgs = {
@@ -197,16 +198,17 @@ export class SlashCommandHandler {
         register()
 
         //@ts-ignore
-        client.ws.on('INTERACTION_CREATE', interaction => {
-            this.handleInteraction(interaction as Interaction);
+        client.ws.on('INTERACTION_CREATE', (interaction: Interaction) => {
+            if (interaction.type == 2) this.handleSlashCommand(interaction);
         })
 
     }
 
 
 
-    private handleInteraction(interaction: Interaction) {
+    private handleSlashCommand(interaction: Interaction) {
         console.log('got interaction')
+        console.log(interaction)
         //console.log(interaction)
         this.commands.forEach(async cmd => {
             //name matches?
@@ -257,13 +259,18 @@ export class SlashCommandHandler {
             var guild = this.client.guilds.cache.get(interaction.guild_id!)!
             var channel = guild.channels.cache.get(interaction.channel_id!)!
             var member = await guild.members.fetch(interaction.member?.user.id!)!
+            var defaultData: InteractionResponse = {
+                type: 4,
+                data: {
+                    content: "k"
+                }
+            }
             if (channel instanceof TextChannel) {
-                var response = (await cmd.action({ client: this.client, interaction, sch: this, args, guild, channel, member, subcommand, subcommandgroup }) ?? { type: 2 }) as InteractionResponse
-                SlashUtils.respondToInteraction(this.client, interaction, response)
+
+                var response = (await cmd.action({ client: this.client, interaction, sch: this, args, guild, channel, member, subcommand, subcommandgroup }) ?? defaultData) as InteractionResponse
+                respondToInteraction(this.client, interaction, response)
             } else {
-                SlashUtils.respondToInteraction(this.client, interaction, {
-                    type: 2
-                })
+                respondToInteraction(this.client, interaction, defaultData)
             }
 
 

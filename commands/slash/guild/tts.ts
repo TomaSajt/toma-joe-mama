@@ -87,7 +87,7 @@ export default new SlashCommand({
       },
     ],
   },
-  action: ({ args, channel }) => {
+  action: async ({ args, channel }) => {
     new gTTS(args.text, args.language).save(
       filename,
       function (err: string | undefined, result: any) {

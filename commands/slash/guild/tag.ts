@@ -13,7 +13,7 @@ export default new SlashCommand({
       },
     ],
   },
-  action: ({ args, channel }) => {
+  action: async ({ args, channel }) => {
     channel.send(`Hello <@${args.member}>`);
   },
 })

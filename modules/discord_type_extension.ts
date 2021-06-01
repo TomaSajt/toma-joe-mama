@@ -1,4 +1,4 @@
-import { Snowflake, GuildMember, User, MessageEmbed } from "discord.js";
+import { Snowflake, GuildMember, User, MessageEmbed, Role, Channel } from "discord.js";
 
 export type ApplicationCommand = {
   id: Snowflake;
@@ -30,7 +30,8 @@ export type ApplicationCommandOptionChoice = {
 
 export type Interaction = {
   id: Snowflake;
-  type: 1 | 2;
+  application_id: Snowflake;
+  type: 1 | 2 | 3;
   data?: ApplicationCommandInteractionData;
   guild_id?: Snowflake;
   channel_id?: Snowflake;
@@ -39,11 +40,21 @@ export type Interaction = {
   token: string;
   version: number;
 };
+
 export type ApplicationCommandInteractionData = {
-  id: Snowflake;
-  name: string;
-  options?: ApplicationCommandInteractionDataOption[];
+  id: Snowflake
+  name: string
+  options?: ApplicationCommandInteractionDataOption[]
+  custom_id: string
+  component_type: string
 };
+
+export type ApplicationCommandInteractionDataResolved = {
+  users?: Map<Snowflake, Partial<User>>
+  members?: Map<Snowflake, Partial<GuildMember>>
+  roles?: Map<Snowflake, Partial<Role>>
+  channels?: Map<Snowflake, Partial<Channel>>
+}
 export type ApplicationCommandInteractionDataOption = {
   name: string;
   type: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -52,9 +63,10 @@ export type ApplicationCommandInteractionDataOption = {
 };
 
 export type InteractionResponse = {
-  type: 1 | 2 | 3 | 4 | 5;
+  type: 1 | 4 | 5 | 6 | 7;
   data?: InteractionApplicationCommandCallbackData;
 };
+
 export type InteractionApplicationCommandCallbackData = {
   tts?: boolean;
   content?: string;

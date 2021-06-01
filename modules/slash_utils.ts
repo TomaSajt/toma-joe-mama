@@ -192,30 +192,6 @@ export async function deleteGlobalCommand(
     `Deleted a global command definition\nGot status ${res.status} ${res.statusText}\n`
   );
 }
-
-export async function respondToInteraction(
-  client: Client,
-  interaction: Interaction,
-  response: InteractionResponse
-) {
-  var url = "https://discord.com/api/v8/interactions";
-  url += `/${interaction.id}`;
-  url += `/${interaction.token}`;
-  url += "/callback";
-  var res = await fetch(url, {
-    headers: {
-      Authorization: `Bot ${client.token}`,
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify(response),
-  });
-  await res.text();
-  console.log(
-    `Responding to interaction with id ${interaction.id}\nGot status ${res.status} ${res.statusText}`
-  );
-}
-
 export async function getGuildCommands(client: Client, guild_id: string) {
   var url = `https://discord.com/api/v8/applications/${
     client.user!.id

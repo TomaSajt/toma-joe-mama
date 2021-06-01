@@ -55,7 +55,7 @@ export default new SlashCommand({
       },
     ],
   },
-  action: ({ args, channel, member, client }) => {
+  action: async ({ args, channel, member, client }) => {
     // var embed = new MessageEmbed()
     //   .setColor("#0099ff")
     //   .setTitle("Quiz")

@@ -20,7 +20,7 @@ export default new SlashCommand({
       },
     ],
   },
-  action: ({ args, guild }) => {
+  action: async ({ args, guild }) => {
     var channelToSend = guild.channels.cache.get(args.channel)!;
     if (channelToSend instanceof TextChannel) {
       channelToSend.send(args.message);
