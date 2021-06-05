@@ -9,6 +9,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@discordjs/opus": "^0.5.0",
         "@types/node": "^14.14.32",
         "@types/node-fetch": "^2.5.8",
         "canvas": "^2.7.0",
@@ -18,6 +19,8 @@
         "gtts": "^0.1.1",
         "node-fetch": "^2.6.1",
         "ts-node": "^9.1.1",
-        "typescript": "^4.2.4"
+        "typescript": "^4.2.4",
+        "ytdl-core": "^4.8.2",
+        "ytdl-core-discord": "^1.3.0"
     }
 }
