@@ -1,7 +1,8 @@
 import { PrefixCommand } from "../../modules/commandutils";
+import fetch from 'node-fetch'
 
 export default new PrefixCommand({
-  names: ["gbruh"],
+  names: ["gbruh", "gb-search"],
   bypassPause: false,
   adminOnly: true,
   hidden: true,
@@ -18,9 +19,8 @@ export default new PrefixCommand({
 async function gbSearch(
   searchTerms: string[],
   limit: number
-): Promise<{ file_url: string }[]> {
-  var response = await fetch(
-    `${process.env.GB_LINK}limit=${limit}&tags=${searchTerms.join("+")}`
-  );
-  return await response.json();
+) {
+  var response = await fetch(`${process.env.GB_LINK}limit=${limit}&tags=${searchTerms.join("+")}`);
+  var json: { file_url: string }[] = await response.json()
+  return json;
 }
